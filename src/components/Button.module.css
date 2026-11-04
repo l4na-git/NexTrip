@@ -1,0 +1,39 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.md {
+  min-width: 170px;
+  height: 48px;
+  padding: 0 20px;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  line-height: 21px;
+}
+
+.lg {
+  height: 52px;
+  padding: 0 20px;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.full {
+  width: 100%;
+}
+
+.primary {
+  background: var(--color-accent);
+  color: var(--color-surface);
+}
+
+.soft {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}

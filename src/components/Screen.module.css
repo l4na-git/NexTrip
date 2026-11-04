@@ -1,0 +1,30 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-y: auto;
+  background: var(--color-surface);
+}
+
+.portrait {
+  max-width: 430px;
+  min-height: min(100dvh, 932px);
+  padding: calc(var(--safe-top) + 24px) calc(var(--safe-right) + 24px)
+    calc(var(--safe-bottom) + 24px) calc(var(--safe-left) + 24px);
+}
+
+.landscape {
+  max-width: 900px;
+  height: min(100dvh, 480px);
+  gap: 12px;
+  padding: calc(var(--safe-top) + 12px) calc(var(--safe-right) + 24px)
+    calc(var(--safe-bottom) + 12px) calc(var(--safe-left) + 24px);
+}
+
+/* 縦長の狭いウィンドウ(PC など)では高さを固定せず、積み重ねて表示する */
+@media (orientation: portrait) {
+  .landscape {
+    height: auto;
+    min-height: 100dvh;
+  }
+}

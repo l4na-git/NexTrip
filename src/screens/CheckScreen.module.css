@@ -1,0 +1,101 @@
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 360fr) minmax(0, 428fr);
+  gap: 24px;
+  flex: 1;
+  min-height: 0;
+}
+
+.explanation {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  padding-left: 7px;
+}
+
+/* 文章だけがスクロールし、ボタンは常に左下に残る */
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.title {
+  font-size: 24px;
+  line-height: 33px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.lead {
+  font-size: 14px;
+  line-height: 19px;
+  color: var(--color-muted);
+}
+
+.tips {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tip {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 19px;
+  color: var(--color-ink);
+}
+
+.preview {
+  font-size: 15px;
+  line-height: 21px;
+}
+
+.action {
+  flex-shrink: 0;
+}
+
+/* 高さが低い端末では文字まわりを詰めて、ボタンと重ならないようにする */
+@media (max-height: 340px) {
+  .explanation,
+  .text {
+    gap: 8px;
+  }
+
+  .title {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .lead {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .tips {
+    gap: 4px;
+  }
+
+  .tip {
+    font-size: 13px;
+    line-height: 18px;
+  }
+}
+
+@media (orientation: portrait) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+
+  .preview {
+    min-height: 160px;
+  }
+}

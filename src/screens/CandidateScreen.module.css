@@ -1,0 +1,137 @@
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 570fr) minmax(0, 226fr);
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.photo {
+  min-height: 0;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.count {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.name {
+  font-size: 22px;
+  line-height: 30px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.camera {
+  /* 候補名の下に残った高さをすべて使い、画面の縦幅に追従させる */
+  flex: 1 1 0;
+  min-height: 56px;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+  height: 58px;
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-soft);
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1.5px var(--color-accent);
+}
+
+.done {
+  background: var(--color-accent);
+}
+
+.current {
+  background: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-surface), 0 0 0 5px var(--color-accent);
+}
+
+.track {
+  flex: 1;
+  min-width: 0;
+  height: 8px;
+  overflow: hidden;
+  border-radius: var(--radius-bar);
+  background: var(--color-surface);
+}
+
+.fill {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-bar);
+  background: var(--color-accent);
+  transform-origin: left center;
+  animation: fill var(--duration) linear forwards;
+}
+
+.next {
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 14px;
+  line-height: 19px;
+  font-weight: 600;
+  color: var(--color-accent);
+  white-space: nowrap;
+}
+
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill {
+    display: none;
+  }
+}
+
+@media (orientation: portrait) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+
+  .photo {
+    min-height: 160px;
+  }
+}
