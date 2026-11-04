@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# MediaPipe の WASM(postinstall で node_modules からコピーする)
+public/mediapipe/wasm
