@@ -22,6 +22,7 @@ export type SmileResult = {
 // 時刻を引数で受け取るので、カメラなしでテストできる。顔が検出されたフレームだけを積算する。
 export class SmileTracker {
   private lastTimestamp: number | null = null
+  private lastHadFace = false
   private smoothed: number | null = null
   private smiling = false
   private observedMs = 0
@@ -42,6 +43,7 @@ export class SmileTracker {
 
   reset() {
     this.lastTimestamp = null
+    this.lastHadFace = false
     this.smoothed = null
     this.smiling = false
     this.observedMs = 0
@@ -51,13 +53,15 @@ export class SmileTracker {
     this.peak = 0
   }
 
-  // groupScore が null のフレーム(誰も写っていない)は時間に数えず、平滑化の状態も捨てる
+  // groupScore が null のフレーム(誰も写っていない)は時間に数えず、平滑化の状態も捨てる。
+  // 顔が戻った最初のフレームも、直前に顔がなかった区間は数えない。
   update(timestampMs: number, groupScore: number | null) {
     const dt =
-      this.lastTimestamp === null
+      this.lastTimestamp === null || !this.lastHadFace
         ? 0
         : Math.min(Math.max(timestampMs - this.lastTimestamp, 0), this.config.maxGapMs)
     this.lastTimestamp = timestampMs
+    this.lastHadFace = groupScore !== null
 
     if (groupScore === null) {
       this.smoothed = null
