@@ -3,7 +3,8 @@ import { CameraPreview } from '../components/CameraPreview'
 import { Placeholder } from '../components/Placeholder'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
-import { CANDIDATE_DURATION_MS, categories } from '../data/candidates'
+import { atmosphereImages, keywords } from '../data/atmosphere'
+import { CANDIDATE_DURATION_MS } from '../data/candidates'
 import type { CameraState } from '../hooks/useCamera'
 import styles from './CandidateScreen.module.css'
 
@@ -11,11 +12,12 @@ type Props = {
   camera: CameraState
   index: number
   onNext: () => void
+  onVideo: (video: HTMLVideoElement | null) => void
 }
 
-export function CandidateScreen({ camera, index, onNext }: Props) {
-  const category = categories[index]
-  const total = categories.length
+export function CandidateScreen({ camera, index, onNext, onVideo }: Props) {
+  const image = atmosphereImages[index]
+  const total = atmosphereImages.length
 
   // 候補ごとに 3 秒で自動的に次へ進む。index が変わるたびにタイマーを張り直す。
   useEffect(() => {
@@ -27,18 +29,26 @@ export function CandidateScreen({ camera, index, onNext }: Props) {
     <Screen orientation="landscape">
       <ScreenHeader />
       <div className={styles.body}>
-        <Placeholder label={`［ 行き先写真：${category.name} ］`} size="lg" className={styles.photo} />
+        <Placeholder label={`［ 画像：${image.placeType} ］`} size="lg" className={styles.photo} />
         <section className={styles.detail}>
           <div className={styles.info}>
             <p className={styles.count}>
               候補 {index + 1} / {total}
             </p>
-            <h1 className={styles.name}>{category.name}</h1>
+            <h1 className={styles.name}>{image.placeType}</h1>
+            <ul className={styles.keywords}>
+              {image.keywordIds.map((id) => (
+                <li key={id} className={styles.keyword}>
+                  {keywords.find((k) => k.id === id)?.label}
+                </li>
+              ))}
+            </ul>
           </div>
           <CameraPreview
             {...camera}
             placeholder="ライブカメラ映像"
             variant="outline"
+            onVideo={onVideo}
             radius={12}
             className={styles.camera}
           />
@@ -47,7 +57,7 @@ export function CandidateScreen({ camera, index, onNext }: Props) {
 
       <div className={styles.progress}>
         <ol className={styles.dots} aria-label={`候補 ${index + 1} / ${total}`}>
-          {categories.map((c, i) => (
+          {atmosphereImages.map((c, i) => (
             <li
               key={c.id}
               className={`${styles.dot} ${i < index ? styles.done : ''} ${i === index ? styles.current : ''}`}
