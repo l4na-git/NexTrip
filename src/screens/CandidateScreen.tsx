@@ -3,7 +3,7 @@ import { CameraPreview } from '../components/CameraPreview'
 import { Placeholder } from '../components/Placeholder'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
-import { atmosphereImages, keywords } from '../data/atmosphere'
+import { atmosphereImages } from '../data/atmosphere'
 import { CANDIDATE_DURATION_MS } from '../data/candidates'
 import type { CameraState } from '../hooks/useCamera'
 import styles from './CandidateScreen.module.css'
@@ -36,13 +36,6 @@ export function CandidateScreen({ camera, index, onNext, onVideo }: Props) {
               候補 {index + 1} / {total}
             </p>
             <h1 className={styles.name}>{image.placeType}</h1>
-            <ul className={styles.keywords}>
-              {image.keywordIds.map((id) => (
-                <li key={id} className={styles.keyword}>
-                  {keywords.find((k) => k.id === id)?.label}
-                </li>
-              ))}
-            </ul>
           </div>
           <CameraPreview
             {...camera}

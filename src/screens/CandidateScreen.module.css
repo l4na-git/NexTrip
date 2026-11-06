@@ -39,25 +39,6 @@
   color: var(--color-ink);
 }
 
-.keywords {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.keyword {
-  padding: 2px 10px;
-  border-radius: var(--radius-bar);
-  background: var(--color-accent-soft);
-  font-size: 12px;
-  line-height: 17px;
-  font-weight: 600;
-  color: var(--color-accent);
-}
-
 .camera {
   /* 候補名の下に残った高さをすべて使い、画面の縦幅に追従させる */
   flex: 1 1 0;
