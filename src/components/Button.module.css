@@ -37,3 +37,8 @@
   background: var(--color-accent-soft);
   color: var(--color-accent);
 }
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

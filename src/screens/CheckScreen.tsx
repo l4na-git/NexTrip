@@ -3,16 +3,20 @@ import { CameraPreview } from '../components/CameraPreview'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
 import type { CameraState } from '../hooks/useCamera'
+import type { SmileMeterStatus } from '../lib/smile/useSmileMeter'
 import styles from './CheckScreen.module.css'
 
 const tips = ['全員の顔が枠の中に入っているか', '明るさは十分か', '顔が隠れていないか']
 
 type Props = {
   camera: CameraState
+  // 表情を検出するモデルの読み込み状況。準備ができるまで次へ進ませない
+  detector: SmileMeterStatus
+  onRetry: () => void
   onConfirm: () => void
 }
 
-export function CheckScreen({ camera, onConfirm }: Props) {
+export function CheckScreen({ camera, detector, onRetry, onConfirm }: Props) {
   return (
     <Screen orientation="landscape">
       <ScreenHeader />
@@ -33,7 +37,18 @@ export function CheckScreen({ camera, onConfirm }: Props) {
             </ul>
           </div>
           <div className={styles.action}>
-            <Button onClick={onConfirm}>全員写っています</Button>
+            {detector === 'error' ? (
+              <>
+                <p className={styles.error} role="alert">
+                  表情の検出を準備できませんでした。
+                </p>
+                <Button onClick={onRetry}>もう一度読み込む</Button>
+              </>
+            ) : (
+              <Button disabled={detector !== 'ready'} onClick={onConfirm}>
+                {detector === 'ready' ? '全員写っています' : '準備中…'}
+              </Button>
+            )}
           </div>
         </section>
         <CameraPreview {...camera} placeholder="カメラを起動中…" className={styles.preview} />

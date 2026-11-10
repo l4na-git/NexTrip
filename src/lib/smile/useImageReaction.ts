@@ -15,6 +15,7 @@ export function useImageReaction(video: HTMLVideoElement | null, enabled: boolea
   const [recorder] = useState(() => new ImageReactionRecorder(DEFAULT_SMILE_CONFIG))
   const [watcher] = useState(() => new NoFaceWatcher(NO_FACE_HOLD_MS))
   const [absent, setAbsent] = useState(false)
+  const [attempt, setAttempt] = useState(0)
 
   const onFrame = useCallback(
     (frame: SmileFrame) => {
@@ -27,7 +28,7 @@ export function useImageReaction(video: HTMLVideoElement | null, enabled: boolea
     [recorder, watcher],
   )
 
-  const { status } = useSmileMeter(video, { enabled, maxFaces: MAX_FACES, onFrame })
+  const { status } = useSmileMeter(video, { enabled, maxFaces: MAX_FACES, attempt, onFrame })
 
   // いまの画像の計測を確定し、次の画像のために計測をやり直す
   const finish = useCallback((): ImageReaction => recorder.finish(), [recorder])
@@ -38,6 +39,9 @@ export function useImageReaction(video: HTMLVideoElement | null, enabled: boolea
     setAbsent(false)
   }, [recorder, watcher])
 
+  // 読み込みに失敗したあとに、もう一度読み込む
+  const retry = useCallback(() => setAttempt((n) => n + 1), [])
+
   // 読み込み中と失敗時は、見つからないのか判定できないので false
-  return { status, noFace: status === 'ready' && absent, finish, reset }
+  return { status, noFace: status === 'ready' && absent, finish, reset, retry }
 }

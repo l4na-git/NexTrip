@@ -60,7 +60,17 @@
 }
 
 .action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
   flex-shrink: 0;
+}
+
+.error {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-ink);
 }
 
 /* 高さが低い端末では文字まわりを詰めて、ボタンと重ならないようにする */

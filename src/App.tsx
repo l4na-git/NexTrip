@@ -29,8 +29,12 @@ export default function App() {
 
   // カメラ映像から画像ごとの反応を計測する。モデルは確認画面から読み込んでおく
   const [video, setVideo] = useState<HTMLVideoElement | null>(null)
-  const reaction = useImageReaction(video, screen === 'check' || screen === 'candidate')
-  const { finish, reset } = reaction
+  // 同意の時点で読み込みを始め、確認画面でボタンを押す頃に準備が終わっているようにする
+  const reaction = useImageReaction(
+    video,
+    screen === 'consent' || screen === 'check' || screen === 'candidate',
+  )
+  const { finish, reset, retry } = reaction
   // 画像ごとの反応。結果画面で集計に使う予定(キーワード集計は次の区切り)
   const [, setReactions] = useState<Partial<Record<PlaceType, ImageReaction>>>({})
 
@@ -64,6 +68,8 @@ export default function App() {
       return (
         <CheckScreen
           camera={camera}
+          detector={reaction.status}
+          onRetry={retry}
           onConfirm={() => {
             setCandidateIndex(0)
             setReactions({})
