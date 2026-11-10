@@ -10,23 +10,22 @@ export type SmileDetector = {
 }
 
 // 顔検出はすべて端末内で行う。WASM とモデルは public/mediapipe/ から配信し、外部へは通信しない。
+// スマホの GPU で映像と同時に動かすと、最初の検出で処理が止まることがあったため、CPU で動かす。
 export async function createSmileDetector(maxFaces = 4): Promise<SmileDetector> {
   const vision = await FilesetResolver.forVisionTasks(`${BASE}mediapipe/wasm`)
 
-  const create = (delegate: 'GPU' | 'CPU') =>
-    FaceLandmarker.createFromOptions(vision, {
-      baseOptions: { modelAssetPath: `${BASE}mediapipe/face_landmarker.task`, delegate },
-      runningMode: 'VIDEO',
-      numFaces: maxFaces,
-      outputFaceBlendshapes: true,
-    })
+  const landmarker = await FaceLandmarker.createFromOptions(vision, {
+    baseOptions: { modelAssetPath: `${BASE}mediapipe/face_landmarker.task`, delegate: 'CPU' },
+    runningMode: 'VIDEO',
+    numFaces: maxFaces,
+    outputFaceBlendshapes: true,
+  })
 
-  let landmarker: FaceLandmarker
-  try {
-    landmarker = await create('GPU')
-  } catch {
-    landmarker = await create('CPU')
-  }
+  // 最初の検出は初期化で重くなるので、準備中のうちに空の画像で 1 回流しておく
+  const canvas = document.createElement('canvas')
+  canvas.width = 64
+  canvas.height = 64
+  landmarker.detectForVideo(canvas, performance.now())
 
   return {
     detect(video, timestampMs) {
