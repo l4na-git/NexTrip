@@ -6,12 +6,14 @@ import { destinations } from '../data/candidates'
 import styles from './CompareScreen.module.css'
 
 type Props = {
+  // キーワード id ごとの、みんなの好みの割合
+  percents: Record<string, number>
   selectedId: string
   onSelect: (id: string) => void
   onDecide: () => void
 }
 
-export function CompareScreen({ selectedId, onSelect, onDecide }: Props) {
+export function CompareScreen({ percents, selectedId, onSelect, onDecide }: Props) {
   return (
     <Screen orientation="landscape">
       <ScreenHeader />
@@ -21,6 +23,7 @@ export function CompareScreen({ selectedId, onSelect, onDecide }: Props) {
           <CandidateCard
             key={destination.id}
             destination={destination}
+            percents={percents}
             selected={destination.id === selectedId}
             onSelect={() => onSelect(destination.id)}
           />

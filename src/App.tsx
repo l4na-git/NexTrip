@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react'
-import { atmosphereImages, type PlaceType } from './data/atmosphere'
+import { useCallback, useMemo, useState } from 'react'
+import { atmosphereImages, keywords, type PlaceType } from './data/atmosphere'
 import { destinations } from './data/candidates'
 import { useCamera } from './hooks/useCamera'
 import { useNeedsRotate } from './hooks/useNeedsRotate'
 import type { ImageReaction } from './lib/smile/imageReaction'
+import { bestDestinationId, keywordShares, percentById } from './lib/keywordShare'
 import { useImageReaction } from './lib/smile/useImageReaction'
 import { CandidateScreen } from './screens/CandidateScreen'
 import { CheckScreen } from './screens/CheckScreen'
@@ -15,13 +16,10 @@ import { RotateScreen } from './screens/RotateScreen'
 import { requiresLandscape, type ScreenName } from './screens/screenName'
 import { StartScreen } from './screens/StartScreen'
 
-// 関心度がもっとも高い候補を最初から選択しておく
-const defaultDestinationId = destinations.reduce((a, b) => (b.interest > a.interest ? b : a)).id
-
 export default function App() {
   const [screen, setScreen] = useState<ScreenName>('start')
   const [candidateIndex, setCandidateIndex] = useState(0)
-  const [selectedId, setSelectedId] = useState(defaultDestinationId)
+  const [selectedId, setSelectedId] = useState(destinations[0].id)
   const needsRotate = useNeedsRotate()
   // 同意後の確認〜比較の間だけカメラを起動する(向き案内で画面が切り替わっても止めない)
   const camera = useCamera(screen === 'check' || screen === 'candidate' || screen === 'compare')
@@ -34,19 +32,25 @@ export default function App() {
     screen === 'consent' || screen === 'check' || screen === 'candidate',
   )
   const { finish, reset, retry } = reaction
-  // 画像ごとの反応。結果画面で集計に使う予定(キーワード集計は次の区切り)
-  const [, setReactions] = useState<Partial<Record<PlaceType, ImageReaction>>>({})
+  // 画像ごとの反応と、そこから集計したキーワードごとの割合
+  const [reactions, setReactions] = useState<Partial<Record<PlaceType, ImageReaction>>>({})
+  const percents = useMemo(
+    () => percentById(keywordShares(reactions, atmosphereImages, keywords)),
+    [reactions],
+  )
 
   const handleNextCandidate = useCallback(() => {
-    const result = finish()
-    const id = atmosphereImages[candidateIndex].id
-    setReactions((prev) => ({ ...prev, [id]: result }))
+    const next = { ...reactions, [atmosphereImages[candidateIndex].id]: finish() }
+    setReactions(next)
     if (candidateIndex < atmosphereImages.length - 1) {
       setCandidateIndex(candidateIndex + 1)
     } else {
+      // 関心度がもっとも高い候補を最初から選択しておく
+      const nextPercents = percentById(keywordShares(next, atmosphereImages, keywords))
+      setSelectedId(bestDestinationId(destinations, nextPercents))
       setScreen('compare')
     }
-  }, [candidateIndex, finish])
+  }, [candidateIndex, finish, reactions])
 
   // スマホが縦向きの間は、横向きが前提の画面で「画面を横にしてください」を出す。画面の state は保持する。
   if (requiresLandscape(screen) && needsRotate) {
@@ -89,6 +93,7 @@ export default function App() {
     case 'compare':
       return (
         <CompareScreen
+          percents={percents}
           selectedId={selectedId}
           onSelect={setSelectedId}
           onDecide={() => setScreen('result')}
