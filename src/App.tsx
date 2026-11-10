@@ -12,9 +12,8 @@ import { ConsentScreen } from './screens/ConsentScreen'
 import { NoFaceScreen } from './screens/NoFaceScreen'
 import { ResultScreen } from './screens/ResultScreen'
 import { RotateScreen } from './screens/RotateScreen'
+import { requiresLandscape, type ScreenName } from './screens/screenName'
 import { StartScreen } from './screens/StartScreen'
-
-type ScreenName = 'start' | 'consent' | 'check' | 'candidate' | 'compare' | 'result'
 
 // 関心度がもっとも高い候補を最初から選択しておく
 const defaultDestinationId = destinations.reduce((a, b) => (b.interest > a.interest ? b : a)).id
@@ -49,8 +48,8 @@ export default function App() {
     }
   }, [candidateIndex, finish])
 
-  // スマホが縦向きの間は、開始画面以外で「画面を横にしてください」を出す。画面の state は保持する。
-  if (screen !== 'start' && needsRotate) {
+  // スマホが縦向きの間は、横向きが前提の画面で「画面を横にしてください」を出す。画面の state は保持する。
+  if (requiresLandscape(screen) && needsRotate) {
     return <RotateScreen />
   }
 
