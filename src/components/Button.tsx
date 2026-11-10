@@ -5,16 +5,17 @@ type Props = {
   variant?: 'primary' | 'soft'
   size?: 'md' | 'lg'
   fullWidth?: boolean
+  disabled?: boolean
   onClick?: () => void
   children: ReactNode
 }
 
-export function Button({ variant = 'primary', size = 'md', fullWidth, onClick, children }: Props) {
+export function Button({ variant = 'primary', size = 'md', fullWidth, disabled, onClick, children }: Props) {
   const className = [styles.button, styles[variant], styles[size], fullWidth && styles.full]
     .filter(Boolean)
     .join(' ')
   return (
-    <button type="button" className={className} onClick={onClick}>
+    <button type="button" className={className} disabled={disabled} onClick={onClick}>
       {children}
     </button>
   )

@@ -15,13 +15,15 @@ type Options = {
   enabled: boolean
   maxFaces: number
   fps?: number
+  // 読み込みに失敗したあと、値を変えると読み込みをやり直す
+  attempt?: number
   // 検出のたびに呼ばれる。SmileTracker に流して計測する用途
   onFrame?: (frame: SmileFrame) => void
 }
 
 // video の映像を約 fps で検出し、最新のフレームを返す
 export function useSmileMeter(video: HTMLVideoElement | null, options: Options) {
-  const { enabled, maxFaces, fps = 15, onFrame } = options
+  const { enabled, maxFaces, fps = 15, attempt = 0, onFrame } = options
   const [status, setStatus] = useState<SmileMeterStatus>('idle')
   const [frame, setFrame] = useState<SmileFrame | null>(null)
   const detectorRef = useRef<SmileDetector | null>(null)
@@ -58,7 +60,7 @@ export function useSmileMeter(video: HTMLVideoElement | null, options: Options) 
       setStatus('idle')
       setFrame(null)
     }
-  }, [enabled])
+  }, [enabled, attempt])
 
   useEffect(() => {
     if (status !== 'ready' || !video) return

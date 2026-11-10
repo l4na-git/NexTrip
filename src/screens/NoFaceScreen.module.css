@@ -1,0 +1,83 @@
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 360fr) minmax(0, 428fr);
+  gap: 24px;
+  flex: 1;
+  min-height: 0;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  min-height: 0;
+  padding-left: 7px;
+  overflow-y: auto;
+}
+
+.mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.title {
+  font-size: 24px;
+  line-height: 33px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.lead {
+  font-size: 14px;
+  line-height: 19px;
+  color: var(--color-muted);
+}
+
+.preview {
+  font-size: 15px;
+  line-height: 21px;
+}
+
+/* 高さが低い端末では詰める */
+@media (max-height: 340px) {
+  .text {
+    gap: 8px;
+  }
+
+  .mark {
+    width: 36px;
+    height: 36px;
+    font-size: 22px;
+  }
+
+  .title {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .lead {
+    font-size: 13px;
+    line-height: 18px;
+  }
+}
+
+@media (orientation: portrait) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+
+  .preview {
+    min-height: 160px;
+  }
+}
