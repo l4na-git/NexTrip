@@ -59,13 +59,3 @@ export function destinationInterest(keywordIds: string[], percents: Record<strin
     keywordIds.reduce((sum, id) => sum + (percents[id] ?? 0), 0),
   )
 }
-
-// 関心度がもっとも高いスポット。同点・全員 0 のときは先頭。
-export function bestDestinationId(
-  destinations: { id: string; keywordIds: string[] }[],
-  percents: Record<string, number>,
-): string {
-  return destinations.reduce((best, d) =>
-    destinationInterest(d.keywordIds, percents) > destinationInterest(best.keywordIds, percents) ? d : best,
-  ).id
-}

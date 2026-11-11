@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
-import { atmosphereImages, keywords, type PlaceType } from './data/atmosphere'
-import { destinations } from './data/candidates'
+import { atmosphereImages, keywords, spots, type PlaceType } from './data/atmosphere'
 import { useCamera } from './hooks/useCamera'
 import { useNeedsRotate } from './hooks/useNeedsRotate'
 import type { ImageReaction } from './lib/smile/imageReaction'
-import { bestDestinationId, keywordShares, percentById } from './lib/keywordShare'
+import { keywordShares, percentById } from './lib/keywordShare'
 import { useImageReaction } from './lib/smile/useImageReaction'
+import { rankSpots } from './lib/spotRanking'
 import { CandidateScreen } from './screens/CandidateScreen'
 import { CheckScreen } from './screens/CheckScreen'
 import { CompareScreen } from './screens/CompareScreen'
@@ -19,7 +19,7 @@ import { StartScreen } from './screens/StartScreen'
 export default function App() {
   const [screen, setScreen] = useState<ScreenName>('start')
   const [candidateIndex, setCandidateIndex] = useState(0)
-  const [selectedId, setSelectedId] = useState(destinations[0].id)
+  const [selectedId, setSelectedId] = useState(spots[0].id)
   const needsRotate = useNeedsRotate()
   // 同意後の確認〜比較の間だけカメラを起動する(向き案内で画面が切り替わっても止めない)
   const camera = useCamera(screen === 'check' || screen === 'candidate' || screen === 'compare')
@@ -38,6 +38,7 @@ export default function App() {
     () => percentById(keywordShares(reactions, atmosphereImages, keywords)),
     [reactions],
   )
+  const ranked = useMemo(() => rankSpots(spots, percents), [percents])
 
   const handleNextCandidate = useCallback(() => {
     const next = { ...reactions, [atmosphereImages[candidateIndex].id]: finish() }
@@ -47,7 +48,7 @@ export default function App() {
     } else {
       // 関心度がもっとも高い候補を最初から選択しておく
       const nextPercents = percentById(keywordShares(next, atmosphereImages, keywords))
-      setSelectedId(bestDestinationId(destinations, nextPercents))
+      setSelectedId(rankSpots(spots, nextPercents)[0].spot.id)
       setScreen('compare')
     }
   }, [candidateIndex, finish, reactions])
@@ -93,6 +94,7 @@ export default function App() {
     case 'compare':
       return (
         <CompareScreen
+          ranked={ranked}
           percents={percents}
           selectedId={selectedId}
           onSelect={setSelectedId}
@@ -100,6 +102,6 @@ export default function App() {
         />
       )
     case 'result':
-      return <ResultScreen destination={destinations.find((d) => d.id === selectedId)!} />
+      return <ResultScreen spot={spots.find((s) => s.id === selectedId)!} />
   }
 }
