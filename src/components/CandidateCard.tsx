@@ -1,19 +1,21 @@
-import { keywords } from '../data/atmosphere'
-import type { Destination } from '../data/candidates'
+import { keywords, type Spot } from '../data/atmosphere'
+import { reactionLabel } from '../lib/spotRanking'
 import { Placeholder } from './Placeholder'
 import { StackedInterestBar, type Segment } from './StackedInterestBar'
 import styles from './CandidateCard.module.css'
 
 type Props = {
-  destination: Destination
+  spot: Spot
+  // スポットの関心度(0〜100)
+  interest: number
   // キーワード id ごとの、みんなの好みの割合
   percents: Record<string, number>
   selected: boolean
   onSelect: () => void
 }
 
-export function CandidateCard({ destination, percents, selected, onSelect }: Props) {
-  const segments: Segment[] = destination.keywordIds
+export function CandidateCard({ spot, interest, percents, selected, onSelect }: Props) {
+  const segments: Segment[] = spot.keywordIds
     .map((id) => ({
       id,
       label: keywords.find((k) => k.id === id)?.label ?? id,
@@ -29,8 +31,8 @@ export function CandidateCard({ destination, percents, selected, onSelect }: Pro
       onClick={onSelect}
     >
       <Placeholder label="［ 写真 ］" size="sm" radius={8} className={styles.photo} />
-      <span className={styles.name}>{destination.name}</span>
-      <span className={styles.reaction}>{destination.reaction}</span>
+      <span className={styles.name}>{spot.name}</span>
+      <span className={styles.reaction}>{reactionLabel(interest)}</span>
       <StackedInterestBar segments={segments} />
     </button>
   )
