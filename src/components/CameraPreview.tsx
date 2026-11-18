@@ -57,7 +57,7 @@ export function CameraPreview({
     }
   }, [stream, radius, onVideo])
 
-  const message = error ? 'カメラを利用できません。ブラウザの許可を確認してください。' : placeholder
+  const message = error ? 'カメラを利用できません' : placeholder
 
   // 映像の表示中は外側の枠をなくし、映像そのものに枠線を付けて縁に沿わせる。
   // 映像(<video>)は上の効果で、この枠の中に付ける。

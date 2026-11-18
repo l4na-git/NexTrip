@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export type CameraState = {
   stream: MediaStream | null
@@ -6,8 +6,11 @@ export type CameraState = {
 }
 
 // active の間だけインカメラを起動し、false になる(またはアンマウントされる)と停止する。
-export function useCamera(active: boolean): CameraState {
+// retry を呼ぶと、カメラの取得をやり直す(ブラウザの許可を変えたあとなど)。
+export function useCamera(active: boolean): CameraState & { retry: () => void } {
   const [state, setState] = useState<CameraState>({ stream: null, error: false })
+  const [attempt, setAttempt] = useState(0)
+  const retry = useCallback(() => setAttempt((n) => n + 1), [])
 
   useEffect(() => {
     if (!active) return
@@ -41,7 +44,7 @@ export function useCamera(active: boolean): CameraState {
       acquired?.getTracks().forEach((track) => track.stop())
       setState({ stream: null, error: false })
     }
-  }, [active])
+  }, [active, attempt])
 
-  return state
+  return { ...state, retry }
 }

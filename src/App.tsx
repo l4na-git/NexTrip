@@ -79,6 +79,7 @@ export default function App() {
           camera={camera}
           detector={reaction.status}
           onRetry={retry}
+          onRetryCamera={camera.retry}
           onBack={() => setScreen('start')}
           onConfirm={() => {
             setCandidateIndex(0)

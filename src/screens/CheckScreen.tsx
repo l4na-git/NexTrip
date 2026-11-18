@@ -15,38 +15,50 @@ type Props = {
   detector: SmileMeterStatus
   onRetry: () => void
   onConfirm: () => void
-  // カメラが使えないときにトップへ戻る
+  // カメラが使えないときの操作。許可を変えたあとの取得のやり直しと、トップへの戻り
+  onRetryCamera: () => void
   onBack: () => void
 }
 
-export function CheckScreen({ camera, detector, onRetry, onConfirm, onBack }: Props) {
+export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamera, onBack }: Props) {
   return (
     <Screen orientation="landscape">
       <ScreenHeader />
       <div className={styles.body}>
         <section className={styles.explanation}>
           <div className={styles.text}>
-            <h1 className={styles.title}>みんなが写っているか確認</h1>
-            <p className={styles.lead}>
-              スマホの位置を調整して、参加する人全員がプレビューに写るようにしてください。
-            </p>
-            <ul className={styles.tips}>
-              {tips.map((tip) => (
-                <li key={tip} className={styles.tip}>
-                  <span aria-hidden="true">✓</span>
-                  {tip}
-                </li>
-              ))}
-            </ul>
+            {camera.error ? (
+              <>
+                <h1 className={styles.title}>カメラを許可してください</h1>
+                <p className={styles.lead}>
+                  アドレスバーのカメラのアイコンから許可して、「もう一度試す」を押してください。他のアプリがカメラを使っていないかも確認してください。
+                </p>
+              </>
+            ) : (
+              <>
+                <h1 className={styles.title}>みんなが写っているか確認</h1>
+                <p className={styles.lead}>
+                  スマホの位置を調整して、参加する人全員がプレビューに写るようにしてください。
+                </p>
+                <ul className={styles.tips}>
+                  {tips.map((tip) => (
+                    <li key={tip} className={styles.tip}>
+                      <span aria-hidden="true">✓</span>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
           <div className={styles.action}>
             {camera.error ? (
-              <>
-                <p className={styles.error} role="alert">
-                  カメラが使えないため、表情判定に進めません。
-                </p>
-                <Button onClick={onBack}>トップに戻る</Button>
-              </>
+              <div className={styles.buttons}>
+                <Button variant="soft" onClick={onBack}>
+                  トップに戻る
+                </Button>
+                <Button onClick={onRetryCamera}>もう一度試す</Button>
+              </div>
             ) : detector === 'error' ? (
               <>
                 <p className={styles.error} role="alert">
