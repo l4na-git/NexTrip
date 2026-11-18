@@ -7,11 +7,11 @@ import { canStartCandidate } from '../lib/cameraGate'
 import type { SmileMeterStatus } from '../lib/smile/useSmileMeter'
 import styles from './CheckScreen.module.css'
 
-// カメラが使えない原因ごとの案内。スマホにはアドレスバーのアイコンがないことが多いので、ブラウザの設定を案内する
+// カメラが使えない原因ごとの案内。確認を閉じただけなら再試行で許可を求め直せるので、設定への案内はその次に置く
 const cameraErrorGuides: Record<CameraErrorReason, { title: string; lead: string; retryable: boolean }> = {
   denied: {
     title: 'カメラを許可してください',
-    lead: 'ブラウザの設定(サイトの権限)でこのサイトのカメラを許可して、「もう一度試す」を押してください。',
+    lead: '「もう一度試す」を押し、カメラの使用を求められたら「許可」を選んでください。確認が表示されない場合は、ブラウザの設定(サイトの権限)でこのサイトのカメラを許可してから、もう一度お試しください。',
     retryable: true,
   },
   inUse: {
