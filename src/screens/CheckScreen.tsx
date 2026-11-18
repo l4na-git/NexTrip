@@ -2,10 +2,39 @@ import { Button } from '../components/Button'
 import { CameraPreview } from '../components/CameraPreview'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
-import type { CameraState } from '../hooks/useCamera'
+import type { CameraErrorReason, CameraState } from '../hooks/useCamera'
 import { canStartCandidate } from '../lib/cameraGate'
 import type { SmileMeterStatus } from '../lib/smile/useSmileMeter'
 import styles from './CheckScreen.module.css'
+
+// カメラが使えない原因ごとの案内。スマホにはアドレスバーのアイコンがないことが多いので、ブラウザの設定を案内する
+const cameraErrorGuides: Record<CameraErrorReason, { title: string; lead: string; retryable: boolean }> = {
+  denied: {
+    title: 'カメラを許可してください',
+    lead: 'ブラウザの設定(サイトの権限)でこのサイトのカメラを許可して、「もう一度試す」を押してください。',
+    retryable: true,
+  },
+  inUse: {
+    title: 'カメラを使えません',
+    lead: '他のアプリがカメラを使っているか、カメラが切断された可能性があります。他のアプリを閉じて、「もう一度試す」を押してください。',
+    retryable: true,
+  },
+  notFound: {
+    title: 'カメラが見つかりません',
+    lead: 'インカメラのある端末で開いてください。',
+    retryable: false,
+  },
+  insecure: {
+    title: 'このページではカメラを使えません',
+    lead: 'カメラは HTTPS の安全な接続でのみ使えます。正しい URL(https://〜)で開き直してください。',
+    retryable: false,
+  },
+  unknown: {
+    title: 'カメラを起動できませんでした',
+    lead: 'ブラウザの許可と他のアプリの使用状況を確認して、「もう一度試す」を押してください。',
+    retryable: true,
+  },
+}
 
 const tips = ['全員の顔が枠の中に入っているか', '明るさは十分か', '顔が隠れていないか']
 
@@ -21,17 +50,19 @@ type Props = {
 }
 
 export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamera, onBack }: Props) {
+  const guide = camera.error ? cameraErrorGuides[camera.reason ?? 'unknown'] : null
+  const canStart = canStartCandidate(camera, detector === 'ready')
   return (
     <Screen orientation="landscape">
       <ScreenHeader />
       <div className={styles.body}>
         <section className={styles.explanation}>
           <div className={styles.text}>
-            {camera.error ? (
+            {guide ? (
               <>
-                <h1 className={styles.title}>カメラを許可してください</h1>
-                <p className={styles.lead}>
-                  アドレスバーのカメラのアイコンから許可して、「もう一度試す」を押してください。他のアプリがカメラを使っていないかも確認してください。
+                <h1 className={styles.title}>{guide.title}</h1>
+                <p className={styles.lead} role="alert">
+                  {guide.lead}
                 </p>
               </>
             ) : (
@@ -52,12 +83,12 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
             )}
           </div>
           <div className={styles.action}>
-            {camera.error ? (
+            {guide ? (
               <div className={styles.buttons}>
                 <Button variant="soft" onClick={onBack}>
                   トップに戻る
                 </Button>
-                <Button onClick={onRetryCamera}>もう一度試す</Button>
+                {guide.retryable && <Button onClick={onRetryCamera}>もう一度試す</Button>}
               </div>
             ) : detector === 'error' ? (
               <>
@@ -67,8 +98,8 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
                 <Button onClick={onRetry}>もう一度読み込む</Button>
               </>
             ) : (
-              <Button disabled={!canStartCandidate(camera, detector === 'ready')} onClick={onConfirm}>
-                {canStartCandidate(camera, detector === 'ready') ? '全員写っています' : '準備中…'}
+              <Button disabled={!canStart} onClick={onConfirm}>
+                {canStart ? '全員写っています' : '準備中…'}
               </Button>
             )}
           </div>
