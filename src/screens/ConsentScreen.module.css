@@ -46,6 +46,15 @@
   color: var(--color-ink);
 }
 
+.note {
+  flex-shrink: 0;
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 17px;
+  text-align: center;
+  color: var(--color-muted);
+}
+
 .action {
   display: flex;
   justify-content: center;
@@ -70,6 +79,12 @@
 
   .points {
     gap: 4px;
+  }
+
+  .note {
+    margin-bottom: 4px;
+    font-size: 11px;
+    line-height: 15px;
   }
 
   .point {
