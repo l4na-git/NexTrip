@@ -3,6 +3,7 @@ import { CameraPreview } from '../components/CameraPreview'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
 import type { CameraState } from '../hooks/useCamera'
+import { canStartCandidate } from '../lib/cameraGate'
 import type { SmileMeterStatus } from '../lib/smile/useSmileMeter'
 import styles from './CheckScreen.module.css'
 
@@ -14,9 +15,11 @@ type Props = {
   detector: SmileMeterStatus
   onRetry: () => void
   onConfirm: () => void
+  // カメラが使えないときにトップへ戻る
+  onBack: () => void
 }
 
-export function CheckScreen({ camera, detector, onRetry, onConfirm }: Props) {
+export function CheckScreen({ camera, detector, onRetry, onConfirm, onBack }: Props) {
   return (
     <Screen orientation="landscape">
       <ScreenHeader />
@@ -37,7 +40,14 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm }: Props) {
             </ul>
           </div>
           <div className={styles.action}>
-            {detector === 'error' ? (
+            {camera.error ? (
+              <>
+                <p className={styles.error} role="alert">
+                  カメラが使えないため、表情判定に進めません。
+                </p>
+                <Button onClick={onBack}>トップに戻る</Button>
+              </>
+            ) : detector === 'error' ? (
               <>
                 <p className={styles.error} role="alert">
                   表情の検出を準備できませんでした。
@@ -45,8 +55,8 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm }: Props) {
                 <Button onClick={onRetry}>もう一度読み込む</Button>
               </>
             ) : (
-              <Button disabled={detector !== 'ready'} onClick={onConfirm}>
-                {detector === 'ready' ? '全員写っています' : '準備中…'}
+              <Button disabled={!canStartCandidate(camera, detector === 'ready')} onClick={onConfirm}>
+                {canStartCandidate(camera, detector === 'ready') ? '全員写っています' : '準備中…'}
               </Button>
             )}
           </div>

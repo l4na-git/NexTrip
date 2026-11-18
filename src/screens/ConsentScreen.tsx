@@ -7,9 +7,10 @@ const points = ['利用はこのセッション中だけ', '顔検出は端末�
 
 type Props = {
   onAgree: () => void
+  onDecline: () => void
 }
 
-export function ConsentScreen({ onAgree }: Props) {
+export function ConsentScreen({ onAgree, onDecline }: Props) {
   return (
     <Screen orientation="landscape">
       <ScreenHeader />
@@ -31,6 +32,9 @@ export function ConsentScreen({ onAgree }: Props) {
       </div>
       <div className={styles.action}>
         <Button onClick={onAgree}>同意して始める</Button>
+        <Button variant="soft" onClick={onDecline}>
+          同意しない
+        </Button>
       </div>
     </Screen>
   )

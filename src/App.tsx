@@ -58,6 +58,11 @@ export default function App() {
     return <RotateScreen />
   }
 
+  // 表情判定の途中でカメラが使えなくなったら、トップに戻す
+  if (screen === 'candidate' && camera.error) {
+    return <StartScreen onStart={() => setScreen('consent')} />
+  }
+
   // 候補表示中に誰も見つからなくなったら注意画面にする。見つかると同じ候補を最初からやり直す。
   if (screen === 'candidate' && reaction.noFace) {
     return <NoFaceScreen camera={camera} onVideo={setVideo} />
@@ -67,13 +72,14 @@ export default function App() {
     case 'start':
       return <StartScreen onStart={() => setScreen('consent')} />
     case 'consent':
-      return <ConsentScreen onAgree={() => setScreen('check')} />
+      return <ConsentScreen onAgree={() => setScreen('check')} onDecline={() => setScreen('start')} />
     case 'check':
       return (
         <CheckScreen
           camera={camera}
           detector={reaction.status}
           onRetry={retry}
+          onBack={() => setScreen('start')}
           onConfirm={() => {
             setCandidateIndex(0)
             setReactions({})
