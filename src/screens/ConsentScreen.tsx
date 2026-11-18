@@ -31,10 +31,10 @@ export function ConsentScreen({ onAgree, onDecline }: Props) {
         </section>
       </div>
       <div className={styles.action}>
-        <Button onClick={onAgree}>同意して始める</Button>
         <Button variant="soft" onClick={onDecline}>
           同意しない
         </Button>
+        <Button onClick={onAgree}>同意して始める</Button>
       </div>
     </Screen>
   )
