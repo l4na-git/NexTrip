@@ -53,14 +53,14 @@ export default function App() {
     }
   }, [candidateIndex, finish, reactions])
 
+  // 表情判定の途中でカメラが使えなくなったら、トップに戻す(カメラは screen が変わると止まる)
+  if (screen === 'candidate' && camera.error) {
+    setScreen('start')
+  }
+
   // スマホが縦向きの間は、横向きが前提の画面で「画面を横にしてください」を出す。画面の state は保持する。
   if (requiresLandscape(screen) && needsRotate) {
     return <RotateScreen />
-  }
-
-  // 表情判定の途中でカメラが使えなくなったら、トップに戻す
-  if (screen === 'candidate' && camera.error) {
-    return <StartScreen onStart={() => setScreen('consent')} />
   }
 
   // 候補表示中に誰も見つからなくなったら注意画面にする。見つかると同じ候補を最初からやり直す。
