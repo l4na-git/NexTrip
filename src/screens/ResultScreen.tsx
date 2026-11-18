@@ -2,22 +2,22 @@ import { Button } from '../components/Button'
 import { Placeholder } from '../components/Placeholder'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
-import type { Destination } from '../data/candidates'
+import type { Spot } from '../data/atmosphere'
 import styles from './ResultScreen.module.css'
 
 type Props = {
-  destination: Destination
+  spot: Spot
 }
 
-export function ResultScreen({ destination }: Props) {
+export function ResultScreen({ spot }: Props) {
   const openMap = () => {
-    const query = encodeURIComponent(destination.name)
+    const query = encodeURIComponent(`${spot.lat},${spot.lng}`)
     window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank', 'noopener')
   }
 
   const share = () => {
     if (navigator.share) {
-      void navigator.share({ title: 'NexTrip', text: `${destination.name}に行こう` }).catch(() => {})
+      void navigator.share({ title: 'NexTrip', text: `${spot.name}に行こう` }).catch(() => {})
     }
   }
 
@@ -27,10 +27,7 @@ export function ResultScreen({ destination }: Props) {
       <div className={styles.body}>
         <section className={styles.decision}>
           <p className={styles.label}>みんなの反応を参考に決定</p>
-          <h1 className={styles.title}>{destination.name}に行こう</h1>
-          <p className={styles.meta}>
-            {destination.eta}｜{destination.price}
-          </p>
+          <h1 className={styles.title}>{spot.name}に行こう</h1>
           <div className={styles.actions}>
             <Button onClick={openMap}>地図を開く</Button>
             <Button variant="soft" onClick={share}>

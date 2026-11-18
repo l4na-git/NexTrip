@@ -1,11 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { AtmosphereImage, Keyword } from '../data/atmosphere'
-import {
-  bestDestinationId,
-  destinationInterest,
-  keywordShares,
-  percentById,
-} from './keywordShare'
+import { destinationInterest, keywordShares, percentById } from './keywordShare'
 
 const keywords: Keyword[] = [
   { id: 'a', label: 'A' },
@@ -96,21 +91,5 @@ describe('destinationInterest', () => {
 
   it('集計にないキーワードは 0 として数える', () => {
     expect(destinationInterest(['x'], { a: 100 })).toBe(0)
-  })
-})
-
-describe('bestDestinationId', () => {
-  const destinations = [
-    { id: 'first', keywordIds: ['a'] },
-    { id: 'second', keywordIds: ['b', 'c'] },
-  ]
-
-  it('関心度が最大のスポットを返す', () => {
-    expect(bestDestinationId(destinations, { a: 20, b: 40, c: 40 })).toBe('second')
-  })
-
-  it('同点・全員 0 のときは先頭', () => {
-    expect(bestDestinationId(destinations, {})).toBe('first')
-    expect(bestDestinationId(destinations, { a: 50, b: 50 })).toBe('first')
   })
 })

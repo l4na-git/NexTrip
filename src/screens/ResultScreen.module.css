@@ -28,12 +28,6 @@
   color: var(--color-ink);
 }
 
-.meta {
-  font-size: 15px;
-  line-height: 21px;
-  color: var(--color-muted);
-}
-
 .actions {
   display: flex;
   flex-wrap: wrap;
