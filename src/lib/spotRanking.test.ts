@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Spot } from '../data/atmosphere'
-import { rankSpots, reactionLabel } from './spotRanking'
+import { rankSpots, reactionLevel } from './spotRanking'
 
 const spot = (id: string, keywordIds: string[]): Spot => ({
   id,
@@ -35,12 +35,12 @@ describe('rankSpots', () => {
   })
 })
 
-describe('reactionLabel', () => {
-  it('関心度の区切りで文言が切り替わる', () => {
-    expect(reactionLabel(50)).toContain('反応が良い')
-    expect(reactionLabel(49)).toContain('関心が高そう')
-    expect(reactionLabel(25)).toContain('関心が高そう')
-    expect(reactionLabel(24)).toContain('もう少し検討')
-    expect(reactionLabel(0)).toContain('もう少し検討')
+describe('reactionLevel', () => {
+  it('関心度の区切りで区分が切り替わる', () => {
+    expect(reactionLevel(50)).toBe('high')
+    expect(reactionLevel(49)).toBe('medium')
+    expect(reactionLevel(25)).toBe('medium')
+    expect(reactionLevel(24)).toBe('low')
+    expect(reactionLevel(0)).toBe('low')
   })
 })
