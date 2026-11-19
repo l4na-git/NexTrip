@@ -17,7 +17,9 @@ type Options = {
   fps?: number
   // 読み込みに失敗したあと、値を変えると読み込みをやり直す
   attempt?: number
-  // 検出のたびに呼ばれる。SmileTracker に流して計測する用途
+  // 検出のたびに呼ばれる。SmileTracker に流して計測する用途。
+  // 最新の関数への差し替えは effect で行うため、useCallback などでメモ化して渡すこと
+  // (毎回新しい関数を渡すと、差し替えが済むまでの間は古い関数にフレームが届く)
   onFrame?: (frame: SmileFrame) => void
 }
 
