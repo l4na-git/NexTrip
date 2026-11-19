@@ -2,7 +2,7 @@ import type { AtmosphereImage, Keyword, Spot } from '../domain/model'
 import type { ImageRepository, KeywordRepository, SpotRepository } from '../domain/ports'
 
 // 仮の値。今後変更する
-export const keywords: Keyword[] = [
+const keywords: Keyword[] = [
   { id: 'relax', label: 'のんびり' },
   { id: 'open', label: '開放的' },
   { id: 'lively', label: 'にぎやか' },
@@ -14,7 +14,7 @@ export const keywords: Keyword[] = [
 ]
 
 // 仮の値。今後変更する
-export const atmosphereImages: AtmosphereImage[] = [
+const atmosphereImages: AtmosphereImage[] = [
   { id: 'sea', placeType: '海', image: { src: null }, keywordIds: ['open', 'relax', 'nature'] },
   { id: 'cafe', placeType: 'カフェ', image: { src: null }, keywordIds: ['stylish', 'relax'] },
   { id: 'nature', placeType: '山・自然', image: { src: null }, keywordIds: ['nature', 'healing', 'open'] },
@@ -24,7 +24,7 @@ export const atmosphereImages: AtmosphereImage[] = [
 ]
 
 // ダミー。スポット推薦(D)で使う
-export const spots: Spot[] = [
+const spots: Spot[] = [
   { id: 'sea-1', name: '〇〇海岸', placeType: 'sea', keywordIds: ['open', 'nature'], lat: 35.3, lng: 139.5 },
   { id: 'sea-2', name: '〇〇ビーチ', placeType: 'sea', keywordIds: ['lively', 'open'], lat: 35.2, lng: 139.6 },
   { id: 'cafe-1', name: '〇〇カフェ', placeType: 'cafe', keywordIds: ['stylish', 'relax'], lat: 35.7, lng: 139.7 },
