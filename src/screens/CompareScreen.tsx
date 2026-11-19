@@ -2,12 +2,14 @@ import { Button } from '../components/Button'
 import { CandidateCard } from '../components/CandidateCard'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
+import type { Keyword } from '../domain/model'
 import type { RankedSpot } from '../lib/spotRanking'
 import styles from './CompareScreen.module.css'
 
 type Props = {
   // 関心度の高い順のスポット
   ranked: RankedSpot[]
+  keywords: Keyword[]
   // キーワード id ごとの、みんなの好みの割合
   percents: Record<string, number>
   selectedId: string
@@ -15,7 +17,7 @@ type Props = {
   onDecide: () => void
 }
 
-export function CompareScreen({ ranked, percents, selectedId, onSelect, onDecide }: Props) {
+export function CompareScreen({ ranked, keywords, percents, selectedId, onSelect, onDecide }: Props) {
   return (
     <Screen orientation="landscape">
       <ScreenHeader />
@@ -25,6 +27,7 @@ export function CompareScreen({ ranked, percents, selectedId, onSelect, onDecide
           <CandidateCard
             key={spot.id}
             spot={spot}
+            keywords={keywords}
             interest={interest}
             percents={percents}
             selected={spot.id === selectedId}

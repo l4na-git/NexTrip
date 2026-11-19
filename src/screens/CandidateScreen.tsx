@@ -3,19 +3,20 @@ import { CameraPreview } from '../components/CameraPreview'
 import { Placeholder } from '../components/Placeholder'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
-import { atmosphereImages } from '../data/atmosphere'
 import { CANDIDATE_DURATION_MS } from '../data/candidates'
+import type { AtmosphereImage } from '../domain/model'
 import type { CameraState } from '../hooks/useCamera'
 import styles from './CandidateScreen.module.css'
 
 type Props = {
   camera: CameraState
+  atmosphereImages: AtmosphereImage[]
   index: number
   onNext: () => void
   onVideo: (video: HTMLVideoElement | null) => void
 }
 
-export function CandidateScreen({ camera, index, onNext, onVideo }: Props) {
+export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVideo }: Props) {
   const image = atmosphereImages[index]
   const total = atmosphereImages.length
 

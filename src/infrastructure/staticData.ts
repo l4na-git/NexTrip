@@ -1,27 +1,5 @@
-export type PlaceType = 'sea' | 'cafe' | 'nature' | 'nightview' | 'themepark' | 'onsen'
-
-export type Keyword = {
-  id: string
-  label: string
-}
-
-export type AtmosphereImage = {
-  id: PlaceType
-  placeType: string
-  // 画像の入る場所。null の間はプレースホルダーを表示する
-  image: { src: string | null }
-  // 雰囲気キーワードの入る場所。keywords の id を指定する
-  keywordIds: string[]
-}
-
-export type Spot = {
-  id: string
-  name: string
-  placeType: PlaceType
-  keywordIds: string[]
-  lat: number
-  lng: number
-}
+import type { AtmosphereImage, Keyword, Spot } from '../domain/model'
+import type { ImageRepository, KeywordRepository, SpotRepository } from '../domain/ports'
 
 // 仮の値。今後変更する
 export const keywords: Keyword[] = [
@@ -55,3 +33,7 @@ export const spots: Spot[] = [
   { id: 'themepark-1', name: '〇〇ランド', placeType: 'themepark', keywordIds: ['lively', 'special'], lat: 35.6, lng: 139.9 },
   { id: 'onsen-1', name: '〇〇温泉', placeType: 'onsen', keywordIds: ['healing', 'relax'], lat: 35.2, lng: 139.0 },
 ]
+
+export const staticKeywordRepository: KeywordRepository = { list: () => keywords }
+export const staticImageRepository: ImageRepository = { list: () => atmosphereImages }
+export const staticSpotRepository: SpotRepository = { list: () => spots }

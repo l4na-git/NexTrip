@@ -1,4 +1,4 @@
-import type { Spot } from '../data/atmosphere'
+import type { Spot } from '../domain/model'
 import { destinationInterest } from './keywordShare'
 
 export type RankedSpot = {

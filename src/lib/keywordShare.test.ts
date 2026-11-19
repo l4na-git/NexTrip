@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { AtmosphereImage, Keyword } from '../data/atmosphere'
+import type { AtmosphereImage, Keyword } from '../domain/model'
 import { destinationInterest, keywordShares, percentById } from './keywordShare'
 
 const keywords: Keyword[] = [

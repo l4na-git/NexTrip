@@ -148,7 +148,9 @@ src/
   lib/
     smile/      笑顔の計測(検出、積算、関心度、画像ごとの計測)
     keywordShare.ts   キーワードの割合の集計と、スポットの関心度の計算
-  data/         画像・キーワード・スポットのデータ
+  domain/       型(model.ts)と、データ取得の interface(ports.ts)
+  infrastructure/   画像・キーワード・スポットのダミーデータ(ports の実装)
+  data/         候補の表示時間などの定数
   tools/        開発用ページ(閾値の確認)
 public/mediapipe/   顔検出のモデルと WASM
 ```

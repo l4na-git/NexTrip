@@ -1,5 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
-import { atmosphereImages, keywords, spots, type PlaceType } from './data/atmosphere'
+import type { PlaceType } from './domain/model'
+import {
+  staticImageRepository,
+  staticKeywordRepository,
+  staticSpotRepository,
+} from './infrastructure/staticData'
 import { useCamera } from './hooks/useCamera'
 import { useNeedsRotate } from './hooks/useNeedsRotate'
 import type { ImageReaction } from './lib/smile/imageReaction'
@@ -15,6 +20,10 @@ import { ResultScreen } from './screens/ResultScreen'
 import { RotateScreen } from './screens/RotateScreen'
 import { requiresLandscape, type ScreenName } from './screens/screenName'
 import { StartScreen } from './screens/StartScreen'
+
+const keywords = staticKeywordRepository.list()
+const atmosphereImages = staticImageRepository.list()
+const spots = staticSpotRepository.list()
 
 export default function App() {
   const [screen, setScreen] = useState<ScreenName>('start')
@@ -93,6 +102,7 @@ export default function App() {
       return (
         <CandidateScreen
           camera={camera}
+          atmosphereImages={atmosphereImages}
           index={candidateIndex}
           onNext={handleNextCandidate}
           onVideo={setVideo}
@@ -102,6 +112,7 @@ export default function App() {
       return (
         <CompareScreen
           ranked={ranked}
+          keywords={keywords}
           percents={percents}
           selectedId={selectedId}
           onSelect={setSelectedId}
