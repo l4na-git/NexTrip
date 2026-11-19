@@ -1,4 +1,4 @@
-import type { AtmosphereImage, Keyword, PlaceType } from '../data/atmosphere'
+import type { AtmosphereImage, Keyword, PlaceType } from '../domain/model'
 import type { ImageReaction } from './smile/imageReaction'
 
 export type KeywordShare = {

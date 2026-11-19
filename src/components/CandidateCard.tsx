@@ -1,4 +1,4 @@
-import { keywords, type Spot } from '../data/atmosphere'
+import type { Keyword, Spot } from '../domain/model'
 import { reactionLevel, type ReactionLevel } from '../lib/spotRanking'
 import { Placeholder } from './Placeholder'
 import { StackedInterestBar, type Segment } from './StackedInterestBar'
@@ -12,6 +12,7 @@ const reactionText: Record<ReactionLevel, string> = {
 
 type Props = {
   spot: Spot
+  keywords: Keyword[]
   // スポットの関心度(0〜100)
   interest: number
   // キーワード id ごとの、みんなの好みの割合
@@ -20,7 +21,7 @@ type Props = {
   onSelect: () => void
 }
 
-export function CandidateCard({ spot, interest, percents, selected, onSelect }: Props) {
+export function CandidateCard({ spot, keywords, interest, percents, selected, onSelect }: Props) {
   const segments: Segment[] = spot.keywordIds
     .map((id) => ({
       id,

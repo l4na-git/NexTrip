@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
-import { atmosphereImages, keywords, spots, type PlaceType } from './data/atmosphere'
+import type { PlaceType } from './domain/model'
+import type { Repositories } from './domain/ports'
 import { useCamera } from './hooks/useCamera'
 import { useNeedsRotate } from './hooks/useNeedsRotate'
 import type { ImageReaction } from './lib/smile/imageReaction'
@@ -16,7 +17,14 @@ import { RotateScreen } from './screens/RotateScreen'
 import { requiresLandscape, type ScreenName } from './screens/screenName'
 import { StartScreen } from './screens/StartScreen'
 
-export default function App() {
+type Props = {
+  repositories: Repositories
+}
+
+export default function App({ repositories }: Props) {
+  const keywords = useMemo(() => repositories.keywords.list(), [repositories])
+  const atmosphereImages = useMemo(() => repositories.images.list(), [repositories])
+  const spots = useMemo(() => repositories.spots.list(), [repositories])
   const [screen, setScreen] = useState<ScreenName>('start')
   const [candidateIndex, setCandidateIndex] = useState(0)
   const [selectedId, setSelectedId] = useState(spots[0].id)
@@ -36,9 +44,9 @@ export default function App() {
   const [reactions, setReactions] = useState<Partial<Record<PlaceType, ImageReaction>>>({})
   const percents = useMemo(
     () => percentById(keywordShares(reactions, atmosphereImages, keywords)),
-    [reactions],
+    [atmosphereImages, keywords, reactions],
   )
-  const ranked = useMemo(() => rankSpots(spots, percents), [percents])
+  const ranked = useMemo(() => rankSpots(spots, percents), [percents, spots])
 
   const handleNextCandidate = useCallback(() => {
     const next = { ...reactions, [atmosphereImages[candidateIndex].id]: finish() }
@@ -51,7 +59,7 @@ export default function App() {
       setSelectedId(rankSpots(spots, nextPercents)[0].spot.id)
       setScreen('compare')
     }
-  }, [candidateIndex, finish, reactions])
+  }, [atmosphereImages, candidateIndex, finish, keywords, reactions, spots])
 
   // 表情判定の途中でカメラが使えなくなったら、トップに戻す(カメラは screen が変わると止まる)
   if (screen === 'candidate' && camera.error) {
@@ -93,6 +101,7 @@ export default function App() {
       return (
         <CandidateScreen
           camera={camera}
+          atmosphereImages={atmosphereImages}
           index={candidateIndex}
           onNext={handleNextCandidate}
           onVideo={setVideo}
@@ -102,6 +111,7 @@ export default function App() {
       return (
         <CompareScreen
           ranked={ranked}
+          keywords={keywords}
           percents={percents}
           selectedId={selectedId}
           onSelect={setSelectedId}
