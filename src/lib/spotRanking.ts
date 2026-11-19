@@ -15,9 +15,11 @@ export function rankSpots(spots: Spot[], percents: Record<string, number>, count
     .slice(0, count)
 }
 
-// 文言の区切りは仮の値
-export function reactionLabel(interest: number): string {
-  if (interest >= 50) return '表情からの推定：反応が良い'
-  if (interest >= 25) return '表情からの推定：関心が高そう'
-  return '表情からの推定：もう少し検討'
+export type ReactionLevel = 'high' | 'medium' | 'low'
+
+// 関心度から反応の区分を返す。表示する文言は表示層が決める。区分の閾値は仮の値
+export function reactionLevel(interest: number): ReactionLevel {
+  if (interest >= 50) return 'high'
+  if (interest >= 25) return 'medium'
+  return 'low'
 }

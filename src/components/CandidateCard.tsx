@@ -1,8 +1,14 @@
 import { keywords, type Spot } from '../data/atmosphere'
-import { reactionLabel } from '../lib/spotRanking'
+import { reactionLevel, type ReactionLevel } from '../lib/spotRanking'
 import { Placeholder } from './Placeholder'
 import { StackedInterestBar, type Segment } from './StackedInterestBar'
 import styles from './CandidateCard.module.css'
+
+const reactionText: Record<ReactionLevel, string> = {
+  high: '表情からの推定：反応が良い',
+  medium: '表情からの推定：関心が高そう',
+  low: '表情からの推定：もう少し検討',
+}
 
 type Props = {
   spot: Spot
@@ -32,7 +38,7 @@ export function CandidateCard({ spot, interest, percents, selected, onSelect }: 
     >
       <Placeholder label="［ 写真 ］" size="sm" radius={8} className={styles.photo} />
       <span className={styles.name}>{spot.name}</span>
-      <span className={styles.reaction}>{reactionLabel(interest)}</span>
+      <span className={styles.reaction}>{reactionText[reactionLevel(interest)]}</span>
       <StackedInterestBar segments={segments} />
     </button>
   )
