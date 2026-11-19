@@ -29,8 +29,9 @@ export default function App({ repositories }: Props) {
   const [candidateIndex, setCandidateIndex] = useState(0)
   const [selectedId, setSelectedId] = useState(spots[0].id)
   const needsRotate = useNeedsRotate()
-  // 同意後の確認〜比較の間だけカメラを起動する(向き案内で画面が切り替わっても止めない)
-  const camera = useCamera(screen === 'check' || screen === 'candidate' || screen === 'compare')
+  // 同意後の確認〜候補表示の間だけカメラを起動する(向き案内で画面が切り替わっても止めない)。
+  // 比較画面はカメラを使わないので、計測が終わったら止める
+  const camera = useCamera(screen === 'check' || screen === 'candidate')
 
   // カメラ映像から画像ごとの反応を計測する。モデルは確認画面から読み込んでおく
   const [video, setVideo] = useState<HTMLVideoElement | null>(null)
