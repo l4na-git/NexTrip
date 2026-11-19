@@ -7,9 +7,10 @@ const points = ['利用はこのセッション中だけ', '顔検出は端末�
 
 type Props = {
   onAgree: () => void
+  onDecline: () => void
 }
 
-export function ConsentScreen({ onAgree }: Props) {
+export function ConsentScreen({ onAgree, onDecline }: Props) {
   return (
     <Screen orientation="landscape">
       <ScreenHeader />
@@ -29,7 +30,13 @@ export function ConsentScreen({ onAgree }: Props) {
           </ul>
         </section>
       </div>
+      <p className={styles.note}>
+        カメラを使わない場合、このアプリは利用できません。「同意しない」を選ぶとトップに戻ります。
+      </p>
       <div className={styles.action}>
+        <Button variant="soft" onClick={onDecline}>
+          同意しない
+        </Button>
         <Button onClick={onAgree}>同意して始める</Button>
       </div>
     </Screen>

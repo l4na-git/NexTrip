@@ -67,6 +67,12 @@
   flex-shrink: 0;
 }
 
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .error {
   font-size: 13px;
   line-height: 18px;

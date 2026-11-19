@@ -53,6 +53,11 @@ export default function App() {
     }
   }, [candidateIndex, finish, reactions])
 
+  // 表情判定の途中でカメラが使えなくなったら、トップに戻す(カメラは screen が変わると止まる)
+  if (screen === 'candidate' && camera.error) {
+    setScreen('start')
+  }
+
   // スマホが縦向きの間は、横向きが前提の画面で「画面を横にしてください」を出す。画面の state は保持する。
   if (requiresLandscape(screen) && needsRotate) {
     return <RotateScreen />
@@ -67,13 +72,15 @@ export default function App() {
     case 'start':
       return <StartScreen onStart={() => setScreen('consent')} />
     case 'consent':
-      return <ConsentScreen onAgree={() => setScreen('check')} />
+      return <ConsentScreen onAgree={() => setScreen('check')} onDecline={() => setScreen('start')} />
     case 'check':
       return (
         <CheckScreen
           camera={camera}
           detector={reaction.status}
           onRetry={retry}
+          onRetryCamera={camera.retry}
+          onBack={() => setScreen('start')}
           onConfirm={() => {
             setCandidateIndex(0)
             setReactions({})

@@ -2,9 +2,39 @@ import { Button } from '../components/Button'
 import { CameraPreview } from '../components/CameraPreview'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
-import type { CameraState } from '../hooks/useCamera'
+import type { CameraErrorReason, CameraState } from '../hooks/useCamera'
+import { canStartCandidate } from '../lib/cameraGate'
 import type { SmileMeterStatus } from '../lib/smile/useSmileMeter'
 import styles from './CheckScreen.module.css'
+
+// カメラが使えない原因ごとの案内。確認を閉じただけなら再試行で許可を求め直せるので、設定への案内はその次に置く
+const cameraErrorGuides: Record<CameraErrorReason, { title: string; lead: string; retryable: boolean }> = {
+  denied: {
+    title: 'カメラを許可してください',
+    lead: '「もう一度試す」を押し、カメラの使用を求められたら「許可」を選んでください。確認が表示されない場合は、ブラウザの設定(サイトの権限)でこのサイトのカメラを許可してから、もう一度お試しください。',
+    retryable: true,
+  },
+  inUse: {
+    title: 'カメラを使えません',
+    lead: '他のアプリがカメラを使っているか、カメラが切断された可能性があります。他のアプリを閉じて、「もう一度試す」を押してください。',
+    retryable: true,
+  },
+  notFound: {
+    title: 'カメラが見つかりません',
+    lead: 'インカメラのある端末で開いてください。',
+    retryable: false,
+  },
+  insecure: {
+    title: 'このページではカメラを使えません',
+    lead: 'カメラは HTTPS の安全な接続でのみ使えます。正しい URL(https://〜)で開き直してください。',
+    retryable: false,
+  },
+  unknown: {
+    title: 'カメラを起動できませんでした',
+    lead: 'ブラウザの許可と他のアプリの使用状況を確認して、「もう一度試す」を押してください。',
+    retryable: true,
+  },
+}
 
 const tips = ['全員の顔が枠の中に入っているか', '明るさは十分か', '顔が隠れていないか']
 
@@ -14,30 +44,53 @@ type Props = {
   detector: SmileMeterStatus
   onRetry: () => void
   onConfirm: () => void
+  // カメラが使えないときの操作。許可を変えたあとの取得のやり直しと、トップへの戻り
+  onRetryCamera: () => void
+  onBack: () => void
 }
 
-export function CheckScreen({ camera, detector, onRetry, onConfirm }: Props) {
+export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamera, onBack }: Props) {
+  const guide = camera.error ? cameraErrorGuides[camera.reason ?? 'unknown'] : null
+  const canStart = canStartCandidate(camera, detector === 'ready')
   return (
     <Screen orientation="landscape">
       <ScreenHeader />
       <div className={styles.body}>
         <section className={styles.explanation}>
           <div className={styles.text}>
-            <h1 className={styles.title}>みんなが写っているか確認</h1>
-            <p className={styles.lead}>
-              スマホの位置を調整して、参加する人全員がプレビューに写るようにしてください。
-            </p>
-            <ul className={styles.tips}>
-              {tips.map((tip) => (
-                <li key={tip} className={styles.tip}>
-                  <span aria-hidden="true">✓</span>
-                  {tip}
-                </li>
-              ))}
-            </ul>
+            {guide ? (
+              <>
+                <h1 className={styles.title}>{guide.title}</h1>
+                <p className={styles.lead} role="alert">
+                  {guide.lead}
+                </p>
+              </>
+            ) : (
+              <>
+                <h1 className={styles.title}>みんなが写っているか確認</h1>
+                <p className={styles.lead}>
+                  スマホの位置を調整して、参加する人全員がプレビューに写るようにしてください。
+                </p>
+                <ul className={styles.tips}>
+                  {tips.map((tip) => (
+                    <li key={tip} className={styles.tip}>
+                      <span aria-hidden="true">✓</span>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
           <div className={styles.action}>
-            {detector === 'error' ? (
+            {guide ? (
+              <div className={styles.buttons}>
+                <Button variant="soft" onClick={onBack}>
+                  トップに戻る
+                </Button>
+                {guide.retryable && <Button onClick={onRetryCamera}>もう一度試す</Button>}
+              </div>
+            ) : detector === 'error' ? (
               <>
                 <p className={styles.error} role="alert">
                   表情の検出を準備できませんでした。
@@ -45,8 +98,8 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm }: Props) {
                 <Button onClick={onRetry}>もう一度読み込む</Button>
               </>
             ) : (
-              <Button disabled={detector !== 'ready'} onClick={onConfirm}>
-                {detector === 'ready' ? '全員写っています' : '準備中…'}
+              <Button disabled={!canStart} onClick={onConfirm}>
+                {canStart ? '全員写っています' : '準備中…'}
               </Button>
             )}
           </div>
