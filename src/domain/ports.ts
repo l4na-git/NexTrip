@@ -11,3 +11,9 @@ export interface ImageRepository {
 export interface SpotRepository {
   list(): Spot[]
 }
+
+export type Repositories = {
+  keywords: KeywordRepository
+  images: ImageRepository
+  spots: SpotRepository
+}
