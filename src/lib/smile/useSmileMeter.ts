@@ -17,15 +17,17 @@ type Options = {
   fps?: number
   // 読み込みに失敗したあと、値を変えると読み込みをやり直す
   attempt?: number
-  // 検出のたびに呼ばれる。SmileTracker に流して計測する用途
+  // 検出のたびに呼ばれる。SmileTracker に流して計測する用途。
+  // 最新の関数への差し替えは effect で行うため、useCallback などでメモ化して渡すこと
+  // (毎回新しい関数を渡すと、差し替えが済むまでの間は古い関数にフレームが届く)
   onFrame?: (frame: SmileFrame) => void
 }
 
-// video の映像を約 fps で検出し、最新のフレームを返す
+// video の映像を約 fps で検出し、結果は onFrame で渡す。
+// フレームを state に持つと検出のたびに呼び出し側が再描画されるため、状態は status のみ返す
 export function useSmileMeter(video: HTMLVideoElement | null, options: Options) {
   const { enabled, maxFaces, fps = 15, attempt = 0, onFrame } = options
   const [status, setStatus] = useState<SmileMeterStatus>('idle')
-  const [frame, setFrame] = useState<SmileFrame | null>(null)
   const detectorRef = useRef<SmileDetector | null>(null)
   const onFrameRef = useRef(onFrame)
   const maxFacesRef = useRef(maxFaces)
@@ -58,7 +60,6 @@ export function useSmileMeter(video: HTMLVideoElement | null, options: Options) 
       detectorRef.current?.close()
       detectorRef.current = null
       setStatus('idle')
-      setFrame(null)
     }
   }, [enabled, attempt])
 
@@ -82,11 +83,10 @@ export function useSmileMeter(video: HTMLVideoElement | null, options: Options) 
       const faces = detector.detect(video, now)
       const next: SmileFrame = { timestamp: now, faces, group: groupSmileScore(faces) }
       onFrameRef.current?.(next)
-      setFrame(next)
     }
     raf = requestAnimationFrame(loop)
     return () => cancelAnimationFrame(raf)
   }, [status, video, fps])
 
-  return { status: enabled && status === 'idle' ? ('loading' as const) : status, frame }
+  return { status: enabled && status === 'idle' ? ('loading' as const) : status }
 }
