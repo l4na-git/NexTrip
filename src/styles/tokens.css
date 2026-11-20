@@ -5,6 +5,11 @@
   --color-ink: #1f2630;
   --color-muted: #5e6e7d;
   --color-line: #c7cfd6;
+  /* 次に押すボタン(画面ごとに 1 つ)。文字との明るさの差は約 6.7:1 */
+  --color-cta: #fcde89;
+  --color-cta-ink: #2f4d6c;
+
+  --shadow-button: 0 2px 4px rgba(31, 38, 48, 0.2);
 
   --radius-lg: 16px;
   --radius-md: 14px;
@@ -14,6 +19,8 @@
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Hiragino Sans',
     'Hiragino Kaku Gothic ProN', 'Noto Sans JP', Meiryo, system-ui, sans-serif;
+  /* ロゴ・見出し・ボタンだけに使う。本文は読みやすさを優先して --font-sans のまま */
+  --font-round: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', var(--font-sans);
 
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
