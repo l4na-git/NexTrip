@@ -75,7 +75,7 @@ stateDiagram-v2
     ボタンは「準備中」で押せない
   end note
   note right of Compare
-    開始・比較・結果は縦向きでも表示。
+    開始・同意・比較・結果は縦向きでも表示。
     それ以外は縦向きだと「画面を横にしてください」を出す
   end note
 ```
