@@ -34,6 +34,7 @@ export type TripSessionEvent =
   // index は計測した画像の位置。いまの画像と違うもの(二重に届いた古いイベント)は無視する
   | { type: 'IMAGE_FINISHED'; index: number; reaction: ImageReaction }
   | { type: 'CAMERA_LOST' }
+  | { type: 'DETECTOR_FAILED' }
   | { type: 'SELECT'; spotId: string }
   | { type: 'DECIDE' }
 
@@ -89,6 +90,9 @@ export function reduceTripSession(
     case 'CAMERA_LOST':
       // 表情判定の途中でカメラが使えなくなったら、確認画面に戻して原因の案内と再試行を出す。
       // 計測は確認画面で確定したときに最初からやり直す
+      return from('candidate', () => ({ ...state, phase: 'check' }))
+    case 'DETECTOR_FAILED':
+      // 表情の検出が途中で止まったら、確認画面に戻してモデルの読み込みをやり直せるようにする
       return from('candidate', () => ({ ...state, phase: 'check' }))
     case 'SELECT':
       return from('compare', () => ({ ...state, selectedSpotId: event.spotId }))

@@ -93,7 +93,7 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
             ) : detector === 'error' ? (
               <>
                 <p className={styles.error} role="alert">
-                  表情の検出を準備できませんでした。
+                  表情を検出できませんでした。
                 </p>
                 <Button onClick={onRetry}>もう一度読み込む</Button>
               </>

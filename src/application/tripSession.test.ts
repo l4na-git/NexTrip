@@ -78,6 +78,10 @@ describe('reduceTripSession: 画面遷移', () => {
     expect(run([{ type: 'CAMERA_LOST' }], at('candidate')).phase).toBe('check')
   })
 
+  it('候補表示中に表情の検出が止まると、確認画面に戻る', () => {
+    expect(run([{ type: 'DETECTOR_FAILED' }], at('candidate')).phase).toBe('check')
+  })
+
   it('いまの画面で起こりえないイベントは無視する', () => {
     const start = at('start')
     expect(run([{ type: 'DECIDE' }, { type: 'CONFIRM_CHECK' }, { type: 'CAMERA_LOST' }], start)).toBe(start)

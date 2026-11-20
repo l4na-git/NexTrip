@@ -48,6 +48,11 @@ export default function App({ repositories }: Props) {
     dispatch({ type: 'CAMERA_LOST' })
   }
 
+  // 表情の検出が途中で続けて失敗したら、確認画面に戻す(確認画面で「もう一度読み込む」を出す)
+  if (phase === 'candidate' && reaction.status === 'error') {
+    dispatch({ type: 'DETECTOR_FAILED' })
+  }
+
   // スマホが縦向きの間は、横向きが前提の画面で「画面を横にしてください」を出す。画面の state は保持する。
   if (requiresLandscape(phase) && needsRotate) {
     return <RotateScreen />
