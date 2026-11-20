@@ -1,7 +1,7 @@
 import type { AtmosphereImage, Keyword, Spot } from '../domain/model'
 import type { ImageReaction } from '../domain/reaction/imageReaction'
 import { keywordShares, percentById, type ImageInterests } from '../domain/recommendation/keywordShare'
-import { rankSpots } from '../domain/recommendation/spotRanking'
+import { rankSpots, type RankedSpot } from '../domain/recommendation/spotRanking'
 
 // 1 回のセッション(同意 → 確認 → 画像を見る → 比べる → 決める)の流れ。
 // 画面遷移のルールはここにまとめ、React や画面の部品には依存させない。
@@ -45,6 +45,17 @@ export const initialTripSession: TripSessionState = {
   selectedSpotId: null,
 }
 
+// カメラを動かす画面。確認〜候補表示の間だけ動かし、比較画面に進んだら(計測が終わったら)止める
+export function needsCamera(phase: Phase): boolean {
+  return phase === 'check' || phase === 'candidate'
+}
+
+// 表情の検出(モデル)を用意しておく画面。
+// 同意の時点で読み込みを始め、確認画面でボタンを押す頃に準備が終わっているようにする
+export function needsDetector(phase: Phase): boolean {
+  return phase === 'consent' || phase === 'check' || phase === 'candidate'
+}
+
 // 画像ごとの計測結果から、推薦に使う関心度だけを取り出す
 export function interestsOf(reactions: TripSessionState['reactions']): ImageInterests {
   return Object.fromEntries(Object.entries(reactions).map(([id, reaction]) => [id, reaction?.interest ?? 0]))
@@ -53,6 +64,19 @@ export function interestsOf(reactions: TripSessionState['reactions']): ImageInte
 // キーワードの id ごとの、みんなの好みの割合
 export function keywordPercents(reactions: TripSessionState['reactions'], catalog: Catalog) {
   return percentById(keywordShares(interestsOf(reactions), catalog.images, catalog.keywords))
+}
+
+// 計測結果から出す提案。比較画面に出す内容と、最初に選んでおくスポットは、どちらもここから決める
+export type Proposal = {
+  // キーワードの id ごとの、みんなの好みの割合
+  percents: Record<string, number>
+  // 関心度の高い順のスポット(上位のみ)
+  ranked: RankedSpot[]
+}
+
+export function selectProposal(reactions: TripSessionState['reactions'], catalog: Catalog): Proposal {
+  const percents = keywordPercents(reactions, catalog)
+  return { percents, ranked: rankSpots(catalog.spots, percents) }
 }
 
 // イベントから次の状態を返す。いまの画面で起こりえないイベントは無視する
@@ -84,7 +108,7 @@ export function reduceTripSession(
           return { ...state, reactions, candidateIndex: state.candidateIndex + 1 }
         }
         // 関心度がもっとも高い候補を最初から選択しておく
-        const top = rankSpots(catalog.spots, keywordPercents(reactions, catalog))[0]
+        const top = selectProposal(reactions, catalog).ranked[0]
         return { ...state, reactions, phase: 'compare', selectedSpotId: top?.spot.id ?? null }
       })
     case 'CAMERA_LOST':
