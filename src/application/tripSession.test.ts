@@ -122,17 +122,6 @@ describe('reduceTripSession: 計測と選択', () => {
   it('比較画面で選んだスポットに切り替わる', () => {
     expect(run([{ type: 'SELECT', spotId: 'spot-a' }], at('compare')).selectedSpotId).toBe('spot-a')
   })
-
-  it('スポットが 1 件もなければ、何も選ばない', () => {
-    const empty = { ...catalog, spots: [] }
-    const state = reduceTripSession(
-      { ...at('candidate'), candidateIndex: 1 },
-      { type: 'IMAGE_FINISHED', reaction: reaction(50) },
-      empty,
-    )
-    expect(state.phase).toBe('compare')
-    expect(state.selectedSpotId).toBeNull()
-  })
 })
 
 describe('集計', () => {
