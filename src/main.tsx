@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles/tokens.css'
 import './styles/global.css'
-import App from './App.tsx'
+import App from './ui/App.tsx'
 import type { Repositories } from './domain/ports'
 import {
   staticImageRepository,
