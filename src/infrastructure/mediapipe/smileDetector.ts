@@ -1,17 +1,11 @@
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision'
-import { faceSmileScore, type FaceSmile } from '../../domain/reaction/score'
+import type { SmileDetector, SmileDetectorFactory } from '../../application/ports'
 
 const BASE = import.meta.env.BASE_URL
 
-export type SmileDetector = {
-  detect: (video: HTMLVideoElement, timestampMs: number) => FaceSmile[]
-  setMaxFaces: (count: number) => Promise<void>
-  close: () => void
-}
-
 // 顔検出はすべて端末内で行う。WASM とモデルは public/mediapipe/ から配信し、外部へは通信しない。
 // スマホの GPU で映像と同時に動かすと、最初の検出で処理が止まることがあったため、CPU で動かす。
-export async function createSmileDetector(maxFaces = 4): Promise<SmileDetector> {
+export const createSmileDetector: SmileDetectorFactory = async (maxFaces): Promise<SmileDetector> => {
   const vision = await FilesetResolver.forVisionTasks(`${BASE}mediapipe/wasm`)
 
   const landmarker = await FaceLandmarker.createFromOptions(vision, {
@@ -28,13 +22,13 @@ export async function createSmileDetector(maxFaces = 4): Promise<SmileDetector> 
   landmarker.detectForVideo(canvas, performance.now())
 
   return {
+    // 口角の生の値だけを返す。笑顔のスコアの計算はドメインで行う
     detect(video, timestampMs) {
       const result = landmarker.detectForVideo(video, timestampMs)
-      return (result.faceBlendshapes ?? []).map(({ categories }) => {
-        const left = categories.find((c) => c.categoryName === 'mouthSmileLeft')?.score ?? 0
-        const right = categories.find((c) => c.categoryName === 'mouthSmileRight')?.score ?? 0
-        return { left, right, score: faceSmileScore(left, right) }
-      })
+      return (result.faceBlendshapes ?? []).map(({ categories }) => ({
+        left: categories.find((c) => c.categoryName === 'mouthSmileLeft')?.score ?? 0,
+        right: categories.find((c) => c.categoryName === 'mouthSmileRight')?.score ?? 0,
+      }))
     },
     setMaxFaces: (count) => landmarker.setOptions({ numFaces: count }),
     close: () => landmarker.close(),

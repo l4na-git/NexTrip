@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { DEFAULT_SMILE_CONFIG, type SmileConfig } from './config'
 import { interestPercent } from './interest'
-import { faceSmileScore, groupSmileScore } from './score'
+import { faceSmileScore, groupSmileScore, toFaceSmile } from './score'
 import { SmileTracker } from './SmileTracker'
 
 // 平滑化なし・100ms 間隔で、指定したスコアの列を流して結果を返す
@@ -15,6 +15,13 @@ function run(scores: (number | null)[], overrides: Partial<SmileConfig> = {}) {
 describe('score', () => {
   it('1 人分は左右の平均になる', () => {
     expect(faceSmileScore(0.2, 0.6)).toBeCloseTo(0.4)
+  })
+
+  it('検出器の生の値に、左右の平均のスコアを付ける', () => {
+    const face = toFaceSmile({ left: 0.2, right: 0.6 })
+    expect(face.left).toBe(0.2)
+    expect(face.right).toBe(0.6)
+    expect(face.score).toBeCloseTo(0.4)
   })
 
   it('複数人は写っている全員の平均になる', () => {

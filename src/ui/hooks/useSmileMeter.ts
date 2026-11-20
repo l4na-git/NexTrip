@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { createSmileDetector, type SmileDetector } from '../../infrastructure/mediapipe/smileDetector'
+import type { SmileDetector } from '../../application/ports'
+import { useSmileDetectorFactory } from '../smileDetectorContext'
 import { createFailureCounter } from './failureCounter'
-import { groupSmileScore, type FaceSmile } from '../../domain/reaction/score'
+import { groupSmileScore, toFaceSmile, type FaceSmile } from '../../domain/reaction/score'
 
 export type SmileFrame = {
   timestamp: number
@@ -28,6 +29,7 @@ type Options = {
 // フレームを state に持つと検出のたびに呼び出し側が再描画されるため、状態は status のみ返す
 export function useSmileMeter(video: HTMLVideoElement | null, options: Options) {
   const { enabled, maxFaces, fps = 15, attempt = 0, onFrame } = options
+  const createDetector = useSmileDetectorFactory()
   const [status, setStatus] = useState<SmileMeterStatus>('idle')
   const detectorRef = useRef<SmileDetector | null>(null)
   const onFrameRef = useRef(onFrame)
@@ -43,7 +45,7 @@ export function useSmileMeter(video: HTMLVideoElement | null, options: Options) 
     if (!enabled) return
 
     let cancelled = false
-    createSmileDetector(maxFacesRef.current)
+    createDetector(maxFacesRef.current)
       .then((detector) => {
         if (cancelled) {
           detector.close()
@@ -62,7 +64,7 @@ export function useSmileMeter(video: HTMLVideoElement | null, options: Options) 
       detectorRef.current = null
       setStatus('idle')
     }
-  }, [enabled, attempt])
+  }, [enabled, attempt, createDetector])
 
   useEffect(() => {
     if (status !== 'ready' || !video) return
@@ -86,7 +88,7 @@ export function useSmileMeter(video: HTMLVideoElement | null, options: Options) 
 
       let faces: FaceSmile[]
       try {
-        faces = detector.detect(video, now)
+        faces = detector.detect(video, now).map(toFaceSmile)
       } catch (e) {
         // 失敗したフレームは飛ばす。続くときは error にして、読み込みのやり直しを促す
         if (detectFailures.fail()) {
