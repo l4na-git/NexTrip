@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { AtmosphereImage, Keyword, Spot } from '../domain/model'
 import {
   initialTripSession,
+  interruptionOf,
   interestsOf,
   keywordPercents,
   needsCamera,
@@ -154,6 +155,33 @@ describe('カメラと検出を動かす画面', () => {
 
   it('検出のモデルは、同意の時点から候補表示まで用意しておく', () => {
     expect(where(needsDetector)).toEqual(['consent', 'check', 'candidate'])
+  })
+})
+
+describe('interruptionOf: 計測中にカメラや検出が使えなくなったとき', () => {
+  const ok = { cameraError: false, detectorFailed: false }
+
+  it('候補表示中にカメラが使えなくなると CAMERA_LOST', () => {
+    expect(interruptionOf('candidate', { ...ok, cameraError: true })).toEqual({ type: 'CAMERA_LOST' })
+  })
+
+  it('候補表示中に検出が止まると DETECTOR_FAILED', () => {
+    expect(interruptionOf('candidate', { ...ok, detectorFailed: true })).toEqual({ type: 'DETECTOR_FAILED' })
+  })
+
+  it('両方のときは、カメラの案内を優先する', () => {
+    expect(interruptionOf('candidate', { cameraError: true, detectorFailed: true })).toEqual({ type: 'CAMERA_LOST' })
+  })
+
+  it('問題がなければ何もしない', () => {
+    expect(interruptionOf('candidate', ok)).toBeNull()
+  })
+
+  it('候補表示以外では何もしない(確認画面では、その画面でエラーを案内する)', () => {
+    const phases: Phase[] = ['start', 'consent', 'check', 'compare', 'result']
+    for (const phase of phases) {
+      expect(interruptionOf(phase, { cameraError: true, detectorFailed: true })).toBeNull()
+    }
   })
 })
 
