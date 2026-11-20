@@ -162,6 +162,7 @@ src/
     App.tsx           セッションの状態に合わせた画面の出し分け
     screens/          画面と、画面ごとの向きの要否
     components/       画面で使う部品
+    presenters/       画面に出す内容(文言・並び順)を、ドメインの結果から作る
     hooks/            セッションの状態、カメラの起動、向きの判定、表情の検出
   tools/        開発用ページ(閾値の確認)
 public/mediapipe/   顔検出のモデルと WASM

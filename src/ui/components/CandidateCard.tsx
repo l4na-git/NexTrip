@@ -1,35 +1,15 @@
-import type { Keyword, Spot } from '../../domain/model'
-import { reactionLevel, type ReactionLevel } from '../../domain/recommendation/spotRanking'
+import type { CandidateCardView } from '../presenters/candidateCards'
 import { Placeholder } from './Placeholder'
-import { StackedInterestBar, type Segment } from './StackedInterestBar'
+import { StackedInterestBar } from './StackedInterestBar'
 import styles from './CandidateCard.module.css'
 
-const reactionText: Record<ReactionLevel, string> = {
-  high: '表情からの推定：反応が良い',
-  medium: '表情からの推定：関心が高そう',
-  low: '表情からの推定：もう少し検討',
-}
-
 type Props = {
-  spot: Spot
-  keywords: Keyword[]
-  // スポットの関心度(0〜100)
-  interest: number
-  // キーワード id ごとの、みんなの好みの割合
-  percents: Record<string, number>
+  card: CandidateCardView
   selected: boolean
   onSelect: () => void
 }
 
-export function CandidateCard({ spot, keywords, interest, percents, selected, onSelect }: Props) {
-  const segments: Segment[] = spot.keywordIds
-    .map((id) => ({
-      id,
-      label: keywords.find((k) => k.id === id)?.label ?? id,
-      percent: percents[id] ?? 0,
-    }))
-    .sort((a, b) => b.percent - a.percent)
-
+export function CandidateCard({ card, selected, onSelect }: Props) {
   return (
     <button
       type="button"
@@ -38,9 +18,9 @@ export function CandidateCard({ spot, keywords, interest, percents, selected, on
       onClick={onSelect}
     >
       <Placeholder label="［ 写真 ］" size="sm" radius={8} className={styles.photo} />
-      <span className={styles.name}>{spot.name}</span>
-      <span className={styles.reaction}>{reactionText[reactionLevel(interest)]}</span>
-      <StackedInterestBar segments={segments} />
+      <span className={styles.name}>{card.name}</span>
+      <span className={styles.reaction}>{card.reaction}</span>
+      <StackedInterestBar segments={card.segments} />
     </button>
   )
 }

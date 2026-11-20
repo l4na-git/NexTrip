@@ -4,6 +4,7 @@ import { useCamera } from './hooks/useCamera'
 import { useImageReaction } from './hooks/useImageReaction'
 import { useNeedsRotate } from './hooks/useNeedsRotate'
 import { useTripSession } from './hooks/useTripSession'
+import { toCandidateCards } from './presenters/candidateCards'
 import { CandidateScreen } from './screens/CandidateScreen'
 import { CheckScreen } from './screens/CheckScreen'
 import { CompareScreen } from './screens/CompareScreen'
@@ -88,9 +89,7 @@ export default function App({ repositories }: Props) {
     case 'compare':
       return (
         <CompareScreen
-          ranked={ranked}
-          keywords={catalog.keywords}
-          percents={percents}
+          cards={toCandidateCards(ranked, catalog.keywords, percents)}
           selectedId={state.selectedSpotId}
           onSelect={(spotId) => dispatch({ type: 'SELECT', spotId })}
           onDecide={() => dispatch({ type: 'DECIDE' })}
