@@ -31,8 +31,10 @@ export type TripSessionEvent =
   | { type: 'DECLINE' }
   | { type: 'BACK_TO_START' }
   | { type: 'CONFIRM_CHECK' }
-  | { type: 'IMAGE_FINISHED'; reaction: ImageReaction }
+  // index は計測した画像の位置。いまの画像と違うもの(二重に届いた古いイベント)は無視する
+  | { type: 'IMAGE_FINISHED'; index: number; reaction: ImageReaction }
   | { type: 'CAMERA_LOST' }
+  | { type: 'DETECTOR_FAILED' }
   | { type: 'SELECT'; spotId: string }
   | { type: 'DECIDE' }
 
@@ -75,6 +77,7 @@ export function reduceTripSession(
       return from('check', () => ({ ...initialTripSession, phase: 'candidate' }))
     case 'IMAGE_FINISHED':
       return from('candidate', () => {
+        if (event.index !== state.candidateIndex) return state
         const image = catalog.images[state.candidateIndex]
         const reactions = { ...state.reactions, [image.id]: event.reaction }
         if (state.candidateIndex < catalog.images.length - 1) {
@@ -85,8 +88,12 @@ export function reduceTripSession(
         return { ...state, reactions, phase: 'compare', selectedSpotId: top?.spot.id ?? null }
       })
     case 'CAMERA_LOST':
-      // 表情判定の途中でカメラが使えなくなったら、トップに戻す
-      return from('candidate', () => ({ ...state, phase: 'start' }))
+      // 表情判定の途中でカメラが使えなくなったら、確認画面に戻して原因の案内と再試行を出す。
+      // 計測は確認画面で確定したときに最初からやり直す
+      return from('candidate', () => ({ ...state, phase: 'check' }))
+    case 'DETECTOR_FAILED':
+      // 表情の検出が途中で止まったら、確認画面に戻してモデルの読み込みをやり直せるようにする
+      return from('candidate', () => ({ ...state, phase: 'check' }))
     case 'SELECT':
       return from('compare', () => ({ ...state, selectedSpotId: event.spotId }))
     case 'DECIDE':

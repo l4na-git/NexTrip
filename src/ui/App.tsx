@@ -35,14 +35,23 @@ export default function App({ repositories }: Props) {
   const reaction = useImageReaction(video, phase === 'consent' || phase === 'check' || phase === 'candidate')
   const { finish, reset, retry } = reaction
 
-  // いまの画像の計測を確定して、次へ進む
-  const handleNextCandidate = useCallback(() => {
-    dispatch({ type: 'IMAGE_FINISHED', reaction: finish() })
-  }, [dispatch, finish])
+  // index の画像の計測を確定して、次へ進む。
+  // 「次の候補へ」とタイマーが重なって二重に届いた分は reducer が無視する
+  const handleNextCandidate = useCallback(
+    (index: number) => {
+      dispatch({ type: 'IMAGE_FINISHED', index, reaction: finish() })
+    },
+    [dispatch, finish],
+  )
 
-  // 表情判定の途中でカメラが使えなくなったら、トップに戻す(カメラは phase が変わると止まる)
+  // 表情判定の途中でカメラが使えなくなったら、確認画面に戻す(確認画面で原因の案内と再試行を出す)
   if (phase === 'candidate' && camera.error) {
     dispatch({ type: 'CAMERA_LOST' })
+  }
+
+  // 表情の検出が途中で続けて失敗したら、確認画面に戻す(確認画面で「もう一度読み込む」を出す)
+  if (phase === 'candidate' && reaction.status === 'error') {
+    dispatch({ type: 'DETECTOR_FAILED' })
   }
 
   // スマホが縦向きの間は、横向きが前提の画面で「画面を横にしてください」を出す。画面の state は保持する。
