@@ -4,11 +4,10 @@
   gap: 8px;
 }
 
-.brand {
-  font-size: 14px;
-  line-height: 19px;
-  font-weight: 600;
-  color: var(--color-accent);
+/* 縦向きの画面は左右の余白が本文と同じなので、ロゴの字下げをなくす */
+.header {
+  padding-left: 0;
+  margin-bottom: 16px;
 }
 
 .title {

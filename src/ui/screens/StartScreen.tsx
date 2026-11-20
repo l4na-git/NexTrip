@@ -1,6 +1,7 @@
 import { Button } from '../components/Button'
 import { Placeholder } from '../components/Placeholder'
 import { Screen } from '../components/Screen'
+import { ScreenHeader } from '../components/ScreenHeader'
 import styles from './StartScreen.module.css'
 
 const steps = ['条件を決める', 'カメラで確認する', '候補を比べて決定']
@@ -13,7 +14,7 @@ export function StartScreen({ onStart }: Props) {
   return (
     <Screen orientation="portrait">
       <section className={styles.intro}>
-        <p className={styles.brand}>NexTrip</p>
+        <ScreenHeader className={styles.header} />
         <h1 className={styles.title}>
           次のおでかけを
           <br />
