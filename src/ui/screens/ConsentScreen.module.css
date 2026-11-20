@@ -1,94 +1,75 @@
-.body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  min-height: 0;
+/* 縦向きの画面は左右の余白が本文と同じなので、ロゴの字下げをなくす */
+.header {
+  padding-left: 0;
 }
 
 .explanation {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 100%;
-  max-width: 420px;
-  max-height: 100%;
-  overflow-y: auto;
+  margin-top: 32px;
 }
 
 .title {
-  font-size: 24px;
-  line-height: 33px;
-  font-weight: 600;
+  font-size: 28px;
+  line-height: 38px;
+  font-weight: 700;
   color: var(--color-ink);
 }
 
 .lead {
-  font-size: 14px;
-  line-height: 19px;
+  font-size: 15px;
+  line-height: 22px;
   color: var(--color-muted);
 }
 
+/* 約束ごとを 1 つずつカードにして、読み飛ばされにくくする */
 .points {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin: 0;
+  gap: 12px;
+  margin: 12px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .point {
   display: flex;
-  gap: 8px;
-  font-size: 14px;
-  line-height: 19px;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 12px 16px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xs);
+  background: var(--color-surface);
+  font-size: 17px;
+  line-height: 24px;
   color: var(--color-ink);
 }
 
-.note {
+.check {
   flex-shrink: 0;
-  margin: 0 0 8px;
-  font-size: 12px;
-  line-height: 17px;
-  text-align: center;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 32px;
+}
+
+.note {
+  font-size: 13px;
+  line-height: 19px;
   color: var(--color-muted);
 }
 
+/* 同意するボタンを上に置き、同意しないボタンも同じ大きさで並べて、どちらも選びやすくする */
 .action {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   gap: 12px;
-  flex-shrink: 0;
-}
-
-@media (max-height: 340px) {
-  .explanation {
-    gap: 8px;
-  }
-
-  .title {
-    font-size: 20px;
-    line-height: 28px;
-  }
-
-  .lead {
-    font-size: 13px;
-    line-height: 18px;
-  }
-
-  .points {
-    gap: 4px;
-  }
-
-  .note {
-    margin-bottom: 4px;
-    font-size: 11px;
-    line-height: 15px;
-  }
-
-  .point {
-    font-size: 13px;
-    line-height: 18px;
-  }
 }

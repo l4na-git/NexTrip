@@ -1,5 +1,9 @@
 import styles from './ScreenHeader.module.css'
 
-export function ScreenHeader() {
-  return <p className={styles.header}>NexTrip</p>
+type Props = {
+  className?: string
+}
+
+export function ScreenHeader({ className }: Props) {
+  return <p className={[styles.header, className].filter(Boolean).join(' ')}>NexTrip</p>
 }
