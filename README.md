@@ -140,7 +140,7 @@ npm run dev      # http://localhost:5173
 
 ## ディレクトリ構成
 
-依存の向きは `ui` / `infrastructure` → `application` → `domain` です。`domain` は React や外部ライブラリに依存しません。
+依存の向きは `ui` / `infrastructure` → `application` → `domain` です。`domain` は React や外部ライブラリに依存しません。この向きは ESLint(`no-restricted-imports`)で確認していて、逆向きの import は `npm run lint` でエラーになります。
 
 ```
 src/
