@@ -12,10 +12,11 @@ describe('static data', () => {
   const spots = staticSpotRepository.list()
   const keywordIds = new Set(keywords.map((k) => k.id))
 
-  it('画像は6件、キーワードは8件、スポットは7件ある', () => {
-    expect(images).toHaveLength(6)
-    expect(keywords).toHaveLength(8)
-    expect(spots).toHaveLength(7)
+  // 件数はデータを足すたびに変わるので固定しない。空でないことだけを確かめる
+  it('画像・キーワード・スポットがそれぞれ 1 件以上ある', () => {
+    expect(images.length).toBeGreaterThan(0)
+    expect(keywords.length).toBeGreaterThan(0)
+    expect(spots.length).toBeGreaterThan(0)
   })
 
   it('画像の id が重複しない', () => {
