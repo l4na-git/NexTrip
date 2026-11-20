@@ -150,15 +150,19 @@ src/
     ports.ts          データ取得の interface
     reaction/         表情の計測(笑顔の積算、関心度、画像ごとの計測)
     recommendation/   キーワードの割合の集計と、スポットの順位づけ
-  application/  アプリケーションのルール(表情判定に進めるか、候補の表示時間)
+  application/  アプリケーションのルール。React に依存しない
+    tripSession.ts    セッションの画面遷移と計測結果(reducer)
+    ports.ts          表情の検出器の interface
+    cameraGate.ts     表情判定に進めるか
+    timing.ts         候補の表示時間
   infrastructure/   ports などの実装
     staticData.ts     画像・キーワード・スポットのダミーデータ
     mediapipe/        MediaPipe による顔検出
   ui/           React の画面
-    App.tsx           画面の切り替え
+    App.tsx           セッションの状態に合わせた画面の出し分け
     screens/          画面と、画面ごとの向きの要否
     components/       画面で使う部品
-    hooks/            カメラの起動、向きの判定、表情の検出
+    hooks/            セッションの状態、カメラの起動、向きの判定、表情の検出
   tools/        開発用ページ(閾値の確認)
 public/mediapipe/   顔検出のモデルと WASM
 ```

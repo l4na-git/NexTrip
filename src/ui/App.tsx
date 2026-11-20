@@ -1,11 +1,9 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { Repositories } from '../domain/ports'
 import { useCamera } from './hooks/useCamera'
-import { useNeedsRotate } from './hooks/useNeedsRotate'
-import type { ImageReaction } from '../domain/reaction/imageReaction'
-import { keywordShares, percentById, type ImageInterests } from '../domain/recommendation/keywordShare'
 import { useImageReaction } from './hooks/useImageReaction'
-import { rankSpots } from '../domain/recommendation/spotRanking'
+import { useNeedsRotate } from './hooks/useNeedsRotate'
+import { useTripSession } from './hooks/useTripSession'
 import { CandidateScreen } from './screens/CandidateScreen'
 import { CheckScreen } from './screens/CheckScreen'
 import { CompareScreen } from './screens/CompareScreen'
@@ -13,79 +11,56 @@ import { ConsentScreen } from './screens/ConsentScreen'
 import { NoFaceScreen } from './screens/NoFaceScreen'
 import { ResultScreen } from './screens/ResultScreen'
 import { RotateScreen } from './screens/RotateScreen'
-import { requiresLandscape, type ScreenName } from './screens/screenName'
+import { requiresLandscape } from './screens/screenName'
 import { StartScreen } from './screens/StartScreen'
-
-// 画像ごとの計測結果から、推薦に使う関心度だけを取り出す
-function interestsOf(reactions: Partial<Record<string, ImageReaction>>): ImageInterests {
-  return Object.fromEntries(Object.entries(reactions).map(([id, reaction]) => [id, reaction?.interest ?? 0]))
-}
 
 type Props = {
   repositories: Repositories
 }
 
+// 画面遷移のルールは useTripSession(application/tripSession)に任せ、
+// ここでは状態に合わせた画面の出し分けと、カメラ・表情の検出の起動だけを行う
 export default function App({ repositories }: Props) {
-  const keywords = useMemo(() => repositories.keywords.list(), [repositories])
-  const atmosphereImages = useMemo(() => repositories.images.list(), [repositories])
-  const spots = useMemo(() => repositories.spots.list(), [repositories])
-  const [screen, setScreen] = useState<ScreenName>('start')
-  const [candidateIndex, setCandidateIndex] = useState(0)
-  const [selectedId, setSelectedId] = useState(spots[0].id)
+  const { state, catalog, percents, ranked, selectedSpot, dispatch } = useTripSession(repositories)
+  const { phase } = state
   const needsRotate = useNeedsRotate()
   // 同意後の確認〜候補表示の間だけカメラを起動する(向き案内で画面が切り替わっても止めない)。
   // 比較画面はカメラを使わないので、計測が終わったら止める
-  const camera = useCamera(screen === 'check' || screen === 'candidate')
+  const camera = useCamera(phase === 'check' || phase === 'candidate')
 
-  // カメラ映像から画像ごとの反応を計測する。モデルは確認画面から読み込んでおく
+  // カメラ映像から画像ごとの反応を計測する。
+  // 同意の時点でモデルの読み込みを始め、確認画面でボタンを押す頃に準備が終わっているようにする
   const [video, setVideo] = useState<HTMLVideoElement | null>(null)
-  // 同意の時点で読み込みを始め、確認画面でボタンを押す頃に準備が終わっているようにする
-  const reaction = useImageReaction(
-    video,
-    screen === 'consent' || screen === 'check' || screen === 'candidate',
-  )
+  const reaction = useImageReaction(video, phase === 'consent' || phase === 'check' || phase === 'candidate')
   const { finish, reset, retry } = reaction
-  // 画像ごとの反応と、そこから集計したキーワードごとの割合
-  const [reactions, setReactions] = useState<Partial<Record<string, ImageReaction>>>({})
-  const percents = useMemo(
-    () => percentById(keywordShares(interestsOf(reactions), atmosphereImages, keywords)),
-    [atmosphereImages, keywords, reactions],
-  )
-  const ranked = useMemo(() => rankSpots(spots, percents), [percents, spots])
 
+  // いまの画像の計測を確定して、次へ進む
   const handleNextCandidate = useCallback(() => {
-    const next = { ...reactions, [atmosphereImages[candidateIndex].id]: finish() }
-    setReactions(next)
-    if (candidateIndex < atmosphereImages.length - 1) {
-      setCandidateIndex(candidateIndex + 1)
-    } else {
-      // 関心度がもっとも高い候補を最初から選択しておく
-      const nextPercents = percentById(keywordShares(interestsOf(next), atmosphereImages, keywords))
-      setSelectedId(rankSpots(spots, nextPercents)[0].spot.id)
-      setScreen('compare')
-    }
-  }, [atmosphereImages, candidateIndex, finish, keywords, reactions, spots])
+    dispatch({ type: 'IMAGE_FINISHED', reaction: finish() })
+  }, [dispatch, finish])
 
-  // 表情判定の途中でカメラが使えなくなったら、トップに戻す(カメラは screen が変わると止まる)
-  if (screen === 'candidate' && camera.error) {
-    setScreen('start')
+  // 表情判定の途中でカメラが使えなくなったら、トップに戻す(カメラは phase が変わると止まる)
+  if (phase === 'candidate' && camera.error) {
+    dispatch({ type: 'CAMERA_LOST' })
   }
 
   // スマホが縦向きの間は、横向きが前提の画面で「画面を横にしてください」を出す。画面の state は保持する。
-  if (requiresLandscape(screen) && needsRotate) {
+  if (requiresLandscape(phase) && needsRotate) {
     return <RotateScreen />
   }
 
   // 候補表示中に誰も見つからなくなったら注意画面にする。見つかると同じ候補を最初からやり直す。
-  if (screen === 'candidate' && reaction.noFace) {
+  if (phase === 'candidate' && reaction.noFace) {
     return <NoFaceScreen camera={camera} onVideo={setVideo} />
   }
 
-  switch (screen) {
+  switch (phase) {
     case 'start':
-      return <StartScreen onStart={() => setScreen('consent')} />
+      return <StartScreen onStart={() => dispatch({ type: 'START' })} />
     case 'consent':
-      return <ConsentScreen onAgree={() => setScreen('check')} onDecline={() => setScreen('start')} />
+      return (
+        <ConsentScreen onAgree={() => dispatch({ type: 'AGREE' })} onDecline={() => dispatch({ type: 'DECLINE' })} />
+      )
     case 'check':
       return (
         <CheckScreen
@@ -93,12 +68,10 @@ export default function App({ repositories }: Props) {
           detector={reaction.status}
           onRetry={retry}
           onRetryCamera={camera.retry}
-          onBack={() => setScreen('start')}
+          onBack={() => dispatch({ type: 'BACK_TO_START' })}
           onConfirm={() => {
-            setCandidateIndex(0)
-            setReactions({})
             reset()
-            setScreen('candidate')
+            dispatch({ type: 'CONFIRM_CHECK' })
           }}
         />
       )
@@ -106,8 +79,8 @@ export default function App({ repositories }: Props) {
       return (
         <CandidateScreen
           camera={camera}
-          atmosphereImages={atmosphereImages}
-          index={candidateIndex}
+          atmosphereImages={catalog.images}
+          index={state.candidateIndex}
           onNext={handleNextCandidate}
           onVideo={setVideo}
         />
@@ -116,14 +89,15 @@ export default function App({ repositories }: Props) {
       return (
         <CompareScreen
           ranked={ranked}
-          keywords={keywords}
+          keywords={catalog.keywords}
           percents={percents}
-          selectedId={selectedId}
-          onSelect={setSelectedId}
-          onDecide={() => setScreen('result')}
+          selectedId={state.selectedSpotId}
+          onSelect={(spotId) => dispatch({ type: 'SELECT', spotId })}
+          onDecide={() => dispatch({ type: 'DECIDE' })}
         />
       )
     case 'result':
-      return <ResultScreen spot={spots.find((s) => s.id === selectedId)!} />
+      // 選んだスポットは比較画面で必ず決まる。データが空で決まらなかったときは何も出さない
+      return selectedSpot ? <ResultScreen spot={selectedSpot} /> : null
   }
 }
