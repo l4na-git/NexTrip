@@ -8,6 +8,8 @@
   min-height: 100dvh;
   padding: calc(var(--safe-top) + 24px) calc(var(--safe-right) + 24px)
     calc(var(--safe-bottom) + 24px) calc(var(--safe-left) + 24px);
+  /* 文字が画面の中ほどより上に来るようにして、背景の濃い部分に載せる */
+  padding-bottom: calc(var(--safe-bottom) + 24px + 12dvh);
   text-align: center;
   color: var(--color-on-bg);
 }
@@ -18,19 +20,19 @@
 }
 
 .title {
-  font-size: 22px;
-  line-height: 30px;
+  font-size: 24px;
+  line-height: 33px;
   font-weight: 700;
 }
 
 .lead {
-  font-size: 14px;
-  line-height: 19px;
+  font-size: 15px;
+  line-height: 22px;
 }
 
 .note {
-  font-size: 12px;
-  line-height: 17px;
+  font-size: 13px;
+  line-height: 19px;
 }
 
 @keyframes turn {

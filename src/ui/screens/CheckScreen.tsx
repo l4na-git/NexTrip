@@ -61,7 +61,7 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
             {guide ? (
               <>
                 <h1 className={styles.title}>{guide.title}</h1>
-                <p className={styles.lead} role="alert">
+                <p className={styles.panel} role="alert">
                   {guide.lead}
                 </p>
               </>
@@ -71,7 +71,7 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
                 <p className={styles.lead}>
                   スマホの位置を調整して、参加する人全員がプレビューに写るようにしてください。
                 </p>
-                <ul className={styles.tips}>
+                <ul className={`${styles.panel} ${styles.tips}`}>
                   {tips.map((tip) => (
                     <li key={tip} className={styles.tip}>
                       <span aria-hidden="true">✓</span>
@@ -92,7 +92,7 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
               </div>
             ) : detector === 'error' ? (
               <>
-                <p className={styles.error} role="alert">
+                <p className={`${styles.panel} ${styles.error}`} role="alert">
                   表情を検出できませんでした。
                 </p>
                 <Button onClick={onRetry}>もう一度読み込む</Button>

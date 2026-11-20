@@ -37,12 +37,22 @@
   color: var(--color-on-bg);
 }
 
+/* 画面の下の方は背景が薄く白い文字が読みにくいので、長い説明や一覧は白いカードに載せる */
+.panel {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: 14px;
+  line-height: 19px;
+  color: var(--color-ink);
+}
+
 .tips {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin: 0;
-  padding: 0;
   list-style: none;
 }
 
@@ -76,7 +86,6 @@
 .error {
   font-size: 13px;
   line-height: 18px;
-  color: var(--color-ink);
 }
 
 /* 高さが低い端末では文字まわりを詰めて、ボタンと重ならないようにする */
@@ -91,9 +100,14 @@
     line-height: 28px;
   }
 
-  .lead {
+  .lead,
+  .panel {
     font-size: 13px;
     line-height: 18px;
+  }
+
+  .panel {
+    padding: 8px 12px;
   }
 
   .tips {
