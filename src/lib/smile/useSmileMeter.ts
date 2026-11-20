@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { createSmileDetector, type SmileDetector } from './detector'
+import { createSmileDetector, type SmileDetector } from '../../infrastructure/mediapipe/smileDetector'
 import { createFailureCounter } from './failureCounter'
 import { groupSmileScore, type FaceSmile } from '../../domain/reaction/score'
 
