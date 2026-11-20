@@ -56,6 +56,18 @@ export function needsDetector(phase: Phase): boolean {
   return phase === 'consent' || phase === 'check' || phase === 'candidate'
 }
 
+// 計測中に、カメラや表情の検出が使えなくなったときに送るイベント。何もなければ null。
+// カメラが使えないときは検出も止まるので、カメラの案内を優先する
+export function interruptionOf(
+  phase: Phase,
+  devices: { cameraError: boolean; detectorFailed: boolean },
+): TripSessionEvent | null {
+  if (phase !== 'candidate') return null
+  if (devices.cameraError) return { type: 'CAMERA_LOST' }
+  if (devices.detectorFailed) return { type: 'DETECTOR_FAILED' }
+  return null
+}
+
 // 画像ごとの計測結果から、推薦に使う関心度だけを取り出す
 export function interestsOf(reactions: TripSessionState['reactions']): ImageInterests {
   return Object.fromEntries(Object.entries(reactions).map(([id, reaction]) => [id, reaction?.interest ?? 0]))
