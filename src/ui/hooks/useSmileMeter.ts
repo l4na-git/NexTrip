@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { createSmileDetector, type SmileDetector } from '../../infrastructure/mediapipe/smileDetector'
+import type { SmileDetector } from '../../application/ports'
+import { createSmileDetector } from '../../infrastructure/mediapipe/smileDetector'
 import { createFailureCounter } from './failureCounter'
-import { groupSmileScore, type FaceSmile } from '../../domain/reaction/score'
+import { groupSmileScore, toFaceSmile, type FaceSmile } from '../../domain/reaction/score'
 
 export type SmileFrame = {
   timestamp: number
@@ -86,7 +87,7 @@ export function useSmileMeter(video: HTMLVideoElement | null, options: Options) 
 
       let faces: FaceSmile[]
       try {
-        faces = detector.detect(video, now)
+        faces = detector.detect(video, now).map(toFaceSmile)
       } catch (e) {
         // 失敗したフレームは飛ばす。続くときは error にして、読み込みのやり直しを促す
         if (detectFailures.fail()) {
