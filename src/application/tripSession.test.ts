@@ -4,6 +4,8 @@ import {
   initialTripSession,
   interestsOf,
   keywordPercents,
+  needsCamera,
+  needsDetector,
   reduceTripSession,
   type Catalog,
   type Phase,
@@ -138,6 +140,19 @@ describe('reduceTripSession: 計測と選択', () => {
 
   it('比較画面で選んだスポットに切り替わる', () => {
     expect(run([{ type: 'SELECT', spotId: 'spot-a' }], at('compare')).selectedSpotId).toBe('spot-a')
+  })
+})
+
+describe('カメラと検出を動かす画面', () => {
+  const phases: Phase[] = ['start', 'consent', 'check', 'candidate', 'compare', 'result']
+  const where = (predicate: (phase: Phase) => boolean) => phases.filter(predicate)
+
+  it('カメラは確認画面と候補表示だけで動かす', () => {
+    expect(where(needsCamera)).toEqual(['check', 'candidate'])
+  })
+
+  it('検出のモデルは、同意の時点から候補表示まで用意しておく', () => {
+    expect(where(needsDetector)).toEqual(['consent', 'check', 'candidate'])
   })
 })
 

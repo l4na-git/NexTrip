@@ -45,6 +45,17 @@ export const initialTripSession: TripSessionState = {
   selectedSpotId: null,
 }
 
+// カメラを動かす画面。確認〜候補表示の間だけ動かし、比較画面に進んだら(計測が終わったら)止める
+export function needsCamera(phase: Phase): boolean {
+  return phase === 'check' || phase === 'candidate'
+}
+
+// 表情の検出(モデル)を用意しておく画面。
+// 同意の時点で読み込みを始め、確認画面でボタンを押す頃に準備が終わっているようにする
+export function needsDetector(phase: Phase): boolean {
+  return phase === 'consent' || phase === 'check' || phase === 'candidate'
+}
+
 // 画像ごとの計測結果から、推薦に使う関心度だけを取り出す
 export function interestsOf(reactions: TripSessionState['reactions']): ImageInterests {
   return Object.fromEntries(Object.entries(reactions).map(([id, reaction]) => [id, reaction?.interest ?? 0]))

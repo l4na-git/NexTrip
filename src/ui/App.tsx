@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { needsCamera, needsDetector } from '../application/tripSession'
 import type { Repositories } from '../domain/ports'
 import { useCamera } from './hooks/useCamera'
 import { useImageReaction } from './hooks/useImageReaction'
@@ -25,14 +26,12 @@ export default function App({ repositories }: Props) {
   const { state, catalog, percents, ranked, selectedSpot, dispatch } = useTripSession(repositories)
   const { phase } = state
   const needsRotate = useNeedsRotate()
-  // 同意後の確認〜候補表示の間だけカメラを起動する(向き案内で画面が切り替わっても止めない)。
-  // 比較画面はカメラを使わないので、計測が終わったら止める
-  const camera = useCamera(phase === 'check' || phase === 'candidate')
+  // どの画面で動かすかは application が決める(向き案内で画面が切り替わっても止めない)
+  const camera = useCamera(needsCamera(phase))
 
-  // カメラ映像から画像ごとの反応を計測する。
-  // 同意の時点でモデルの読み込みを始め、確認画面でボタンを押す頃に準備が終わっているようにする
+  // カメラ映像から画像ごとの反応を計測する
   const [video, setVideo] = useState<HTMLVideoElement | null>(null)
-  const reaction = useImageReaction(video, phase === 'consent' || phase === 'check' || phase === 'candidate')
+  const reaction = useImageReaction(video, needsDetector(phase))
   const { finish, reset, retry } = reaction
 
   // index の画像の計測を確定して、次へ進む。
