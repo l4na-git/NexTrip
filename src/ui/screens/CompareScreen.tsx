@@ -2,36 +2,29 @@ import { Button } from '../components/Button'
 import { CandidateCard } from '../components/CandidateCard'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
-import type { Keyword } from '../../domain/model'
-import type { RankedSpot } from '../../domain/recommendation/spotRanking'
+import type { CandidateCardView } from '../presenters/candidateCards'
 import styles from './CompareScreen.module.css'
 
 type Props = {
-  // 関心度の高い順のスポット
-  ranked: RankedSpot[]
-  keywords: Keyword[]
-  // キーワード id ごとの、みんなの好みの割合
-  percents: Record<string, number>
+  // 関心度の高い順のカード
+  cards: CandidateCardView[]
   selectedId: string | null
   onSelect: (id: string) => void
   onDecide: () => void
 }
 
-export function CompareScreen({ ranked, keywords, percents, selectedId, onSelect, onDecide }: Props) {
+export function CompareScreen({ cards, selectedId, onSelect, onDecide }: Props) {
   return (
     <Screen orientation="landscape">
       <ScreenHeader />
       <h1 className={styles.title}>候補を比べる</h1>
       <div className={styles.cards}>
-        {ranked.map(({ spot, interest }) => (
+        {cards.map((card) => (
           <CandidateCard
-            key={spot.id}
-            spot={spot}
-            keywords={keywords}
-            interest={interest}
-            percents={percents}
-            selected={spot.id === selectedId}
-            onSelect={() => onSelect(spot.id)}
+            key={card.spotId}
+            card={card}
+            selected={card.spotId === selectedId}
+            onSelect={() => onSelect(card.spotId)}
           />
         ))}
       </div>
