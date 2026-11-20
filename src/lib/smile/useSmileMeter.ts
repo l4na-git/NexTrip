@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createSmileDetector, type SmileDetector } from './detector'
 import { createFailureCounter } from './failureCounter'
-import { groupSmileScore, type FaceSmile } from './score'
+import { groupSmileScore, type FaceSmile } from '../../domain/reaction/score'
 
 export type SmileFrame = {
   timestamp: number

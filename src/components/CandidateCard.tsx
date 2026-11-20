@@ -1,5 +1,5 @@
 import type { Keyword, Spot } from '../domain/model'
-import { reactionLevel, type ReactionLevel } from '../lib/spotRanking'
+import { reactionLevel, type ReactionLevel } from '../domain/recommendation/spotRanking'
 import { Placeholder } from './Placeholder'
 import { StackedInterestBar, type Segment } from './StackedInterestBar'
 import styles from './CandidateCard.module.css'

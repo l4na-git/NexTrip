@@ -1,5 +1,5 @@
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision'
-import { faceSmileScore, type FaceSmile } from './score'
+import { faceSmileScore, type FaceSmile } from '../../domain/reaction/score'
 
 const BASE = import.meta.env.BASE_URL
 

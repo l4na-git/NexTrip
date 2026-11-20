@@ -1,4 +1,4 @@
-import type { SmileConfig } from '../../lib/smile/config'
+import type { SmileConfig } from '../../domain/reaction/config'
 
 export type ChartPoint = {
   t: number

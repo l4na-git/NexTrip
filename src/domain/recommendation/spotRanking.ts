@@ -1,4 +1,4 @@
-import type { Spot } from '../domain/model'
+import type { Spot } from '../model'
 import { destinationInterest } from './keywordShare'
 
 export type RankedSpot = {

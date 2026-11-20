@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react'
-import { DEFAULT_SMILE_CONFIG } from './config'
+import { DEFAULT_SMILE_CONFIG } from '../../domain/reaction/config'
 import {
   ImageReactionRecorder,
   NO_FACE_HOLD_MS,
   NoFaceWatcher,
   type ImageReaction,
-} from './imageReaction'
+} from '../../domain/reaction/imageReaction'
 import { useSmileMeter, type SmileFrame } from './useSmileMeter'
 
 const MAX_FACES = 5
