@@ -3,8 +3,17 @@
   align-items: center;
   justify-content: center;
   border: 0;
-  font-weight: 600;
+  box-shadow: var(--shadow-button);
+  font-family: var(--font-round);
+  font-weight: 700;
   white-space: nowrap;
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
+}
+
+/* 押したことが指の下でも分かるように、少し沈める */
+.button:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(31, 38, 48, 0.2);
 }
 
 .md {
@@ -12,16 +21,16 @@
   height: 48px;
   padding: 0 20px;
   border-radius: var(--radius-sm);
-  font-size: 15px;
-  line-height: 21px;
+  font-size: 17px;
+  line-height: 22px;
 }
 
 .lg {
   height: 52px;
   padding: 0 20px;
   border-radius: var(--radius-md);
-  font-size: 16px;
-  line-height: 22px;
+  font-size: 19px;
+  line-height: 24px;
 }
 
 .full {
@@ -29,8 +38,8 @@
 }
 
 .primary {
-  background: var(--color-accent);
-  color: var(--color-surface);
+  background: var(--color-cta);
+  color: var(--color-cta-ink);
 }
 
 .soft {
@@ -40,5 +49,12 @@
 
 .button:disabled {
   opacity: 0.6;
+  box-shadow: none;
   cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
 }
