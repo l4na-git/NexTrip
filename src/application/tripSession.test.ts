@@ -6,6 +6,7 @@ import {
   keywordPercents,
   needsCamera,
   needsDetector,
+  selectProposal,
   reduceTripSession,
   type Catalog,
   type Phase,
@@ -166,5 +167,26 @@ describe('集計', () => {
 
   it('計測結果から、キーワードごとの割合を出す', () => {
     expect(keywordPercents({ 'img-a': reaction(30), 'img-b': reaction(10) }, catalog)).toEqual({ a: 75, b: 25 })
+  })
+
+  it('提案は、割合と、関心度の高い順のスポットを返す', () => {
+    const proposal = selectProposal({ 'img-a': reaction(10), 'img-b': reaction(30) }, catalog)
+    expect(proposal.percents).toEqual({ a: 25, b: 75 })
+    expect(proposal.ranked.map((r) => [r.spot.id, r.interest])).toEqual([
+      ['spot-b', 75],
+      ['spot-a', 25],
+    ])
+  })
+
+  it('比較画面で最初に選ぶスポットは、提案の 1 位と同じになる', () => {
+    const reactions = { 'img-a': reaction(10), 'img-b': reaction(30) }
+    const state = run(
+      [
+        { type: 'IMAGE_FINISHED', index: 0, reaction: reactions['img-a'] },
+        { type: 'IMAGE_FINISHED', index: 1, reaction: reactions['img-b'] },
+      ],
+      at('candidate'),
+    )
+    expect(state.selectedSpotId).toBe(selectProposal(reactions, catalog).ranked[0].spot.id)
   })
 })
