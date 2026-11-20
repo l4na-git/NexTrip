@@ -12,7 +12,7 @@ type Props = {
   keywords: Keyword[]
   // キーワード id ごとの、みんなの好みの割合
   percents: Record<string, number>
-  selectedId: string
+  selectedId: string | null
   onSelect: (id: string) => void
   onDecide: () => void
 }
