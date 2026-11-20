@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { createSmileDetector, type SmileDetector } from './detector'
+import { createFailureCounter } from './failureCounter'
 import { groupSmileScore, type FaceSmile } from './score'
 
 export type SmileFrame = {
@@ -70,6 +71,9 @@ export function useSmileMeter(video: HTMLVideoElement | null, options: Options) 
     let raf = 0
     let last = 0
     let lastVideoTime = -1
+    // 映像の切り替わりなどで一時的に失敗することがあるので、約 1 秒ぶん続いたときだけ止める
+    const detectFailures = createFailureCounter(Math.max(1, Math.round(fps)))
+    let onFrameErrorLogged = false
 
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop)
@@ -80,9 +84,30 @@ export function useSmileMeter(video: HTMLVideoElement | null, options: Options) 
       last = now
       lastVideoTime = video.currentTime
 
-      const faces = detector.detect(video, now)
+      let faces: FaceSmile[]
+      try {
+        faces = detector.detect(video, now)
+      } catch (e) {
+        // 失敗したフレームは飛ばす。続くときは error にして、読み込みのやり直しを促す
+        if (detectFailures.fail()) {
+          console.error('[useSmileMeter] 表情の検出が続けて失敗したため、検出を止めます', e)
+          cancelAnimationFrame(raf)
+          setStatus('error')
+        }
+        return
+      }
+      detectFailures.succeed()
+
       const next: SmileFrame = { timestamp: now, faces, group: groupSmileScore(faces) }
-      onFrameRef.current?.(next)
+      try {
+        onFrameRef.current?.(next)
+      } catch (e) {
+        // 呼び出し側の不具合は、モデルを読み込み直しても直らないので error にはしない。ログは 1 回だけ出す
+        if (!onFrameErrorLogged) {
+          onFrameErrorLogged = true
+          console.error('[useSmileMeter] onFrame で例外が発生しました', e)
+        }
+      }
     }
     raf = requestAnimationFrame(loop)
     return () => cancelAnimationFrame(raf)
