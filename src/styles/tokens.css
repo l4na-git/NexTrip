@@ -9,6 +9,14 @@
   --color-cta: #fcde89;
   --color-cta-ink: #2f4d6c;
 
+  /*
+   * 画面の背景。デザインの色(#668dd5 → #8099df → #d5ebff)のままだと、白い文字との明るさの差が
+   * 上の濃い部分でも約 3.3:1 しかないので、上半分を濃くして、白い本文(14px〜)でも約 4.4:1 以上にする。
+   * 下の薄い部分には白い小さい文字を置かず、白いカードに載せるか濃い文字にする
+   */
+  --color-on-bg: #ffffff;
+  --gradient-page: linear-gradient(180deg, #4a72bd 0%, #5576c3 50%, #9fbcec 80%, #d5ebff 100%);
+
   --shadow-button: 0 2px 4px rgba(31, 38, 48, 0.2);
 
   --radius-lg: 16px;

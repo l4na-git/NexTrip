@@ -14,13 +14,13 @@
   font-size: 28px;
   line-height: 38px;
   font-weight: 700;
-  color: var(--color-ink);
+  color: var(--color-on-bg);
 }
 
 .lead {
   font-size: 15px;
   line-height: 22px;
-  color: var(--color-muted);
+  color: var(--color-on-bg);
 }
 
 /* 約束ごとを 1 つずつカードにして、読み飛ばされにくくする */
