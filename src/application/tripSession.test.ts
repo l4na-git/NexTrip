@@ -64,10 +64,10 @@ describe('reduceTripSession: 画面遷移', () => {
   })
 
   it('全部の画像を見終わると比較画面に進む', () => {
-    const state = run([{ type: 'IMAGE_FINISHED', reaction: reaction(10) }], at('candidate'))
+    const state = run([{ type: 'IMAGE_FINISHED', index: 0, reaction: reaction(10) }], at('candidate'))
     expect(state.phase).toBe('candidate')
     expect(state.candidateIndex).toBe(1)
-    expect(run([{ type: 'IMAGE_FINISHED', reaction: reaction(10) }], state).phase).toBe('compare')
+    expect(run([{ type: 'IMAGE_FINISHED', index: 1, reaction: reaction(10) }], state).phase).toBe('compare')
   })
 
   it('比較画面で決めると結果画面に進む', () => {
@@ -82,7 +82,7 @@ describe('reduceTripSession: 画面遷移', () => {
     const start = at('start')
     expect(run([{ type: 'DECIDE' }, { type: 'CONFIRM_CHECK' }, { type: 'CAMERA_LOST' }], start)).toBe(start)
     const compare = at('compare')
-    expect(run([{ type: 'IMAGE_FINISHED', reaction: reaction(50) }], compare)).toBe(compare)
+    expect(run([{ type: 'IMAGE_FINISHED', index: 0, reaction: reaction(50) }], compare)).toBe(compare)
   })
 })
 
@@ -100,8 +100,8 @@ describe('reduceTripSession: 計測と選択', () => {
   it('画像ごとの計測結果を、画像の id で記録する', () => {
     const state = run(
       [
-        { type: 'IMAGE_FINISHED', reaction: reaction(20) },
-        { type: 'IMAGE_FINISHED', reaction: reaction(70) },
+        { type: 'IMAGE_FINISHED', index: 0, reaction: reaction(20) },
+        { type: 'IMAGE_FINISHED', index: 1, reaction: reaction(70) },
       ],
       at('candidate'),
     )
@@ -111,12 +111,25 @@ describe('reduceTripSession: 計測と選択', () => {
   it('比較画面に進むとき、関心度がもっとも高いスポットを選んでおく', () => {
     const state = run(
       [
-        { type: 'IMAGE_FINISHED', reaction: reaction(20) },
-        { type: 'IMAGE_FINISHED', reaction: reaction(70) },
+        { type: 'IMAGE_FINISHED', index: 0, reaction: reaction(20) },
+        { type: 'IMAGE_FINISHED', index: 1, reaction: reaction(70) },
       ],
       at('candidate'),
     )
     expect(state.selectedSpotId).toBe('spot-b')
+  })
+
+  it('同じ画像の計測が二重に届いても、次の画像を飛ばさない', () => {
+    // 「次の候補へ」とタイマーがほぼ同時に動いたときを想定する
+    const state = run(
+      [
+        { type: 'IMAGE_FINISHED', index: 0, reaction: reaction(20) },
+        { type: 'IMAGE_FINISHED', index: 0, reaction: reaction(0) },
+      ],
+      at('candidate'),
+    )
+    expect(state.candidateIndex).toBe(1)
+    expect(state.reactions).toEqual({ 'img-a': reaction(20) })
   })
 
   it('比較画面で選んだスポットに切り替わる', () => {

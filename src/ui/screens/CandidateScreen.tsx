@@ -12,7 +12,8 @@ type Props = {
   camera: CameraState
   atmosphereImages: AtmosphereImage[]
   index: number
-  onNext: () => void
+  // 見ていた画像の位置を渡して、次へ進む
+  onNext: (index: number) => void
   onVideo: (video: HTMLVideoElement | null) => void
 }
 
@@ -22,7 +23,7 @@ export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVid
 
   // 候補ごとに 3 秒で自動的に次へ進む。index が変わるたびにタイマーを張り直す。
   useEffect(() => {
-    const timer = window.setTimeout(onNext, CANDIDATE_DURATION_MS)
+    const timer = window.setTimeout(() => onNext(index), CANDIDATE_DURATION_MS)
     return () => window.clearTimeout(timer)
   }, [index, onNext])
 
@@ -66,7 +67,7 @@ export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVid
             style={{ '--duration': `${CANDIDATE_DURATION_MS}ms` } as CSSProperties}
           />
         </div>
-        <button type="button" className={styles.next} onClick={onNext}>
+        <button type="button" className={styles.next} onClick={() => onNext(index)}>
           {index + 1} / {total}&emsp;次の候補へ ›
         </button>
       </div>

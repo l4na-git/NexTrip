@@ -34,10 +34,14 @@ export default function App({ repositories }: Props) {
   const reaction = useImageReaction(video, phase === 'consent' || phase === 'check' || phase === 'candidate')
   const { finish, reset, retry } = reaction
 
-  // いまの画像の計測を確定して、次へ進む
-  const handleNextCandidate = useCallback(() => {
-    dispatch({ type: 'IMAGE_FINISHED', reaction: finish() })
-  }, [dispatch, finish])
+  // index の画像の計測を確定して、次へ進む。
+  // 「次の候補へ」とタイマーが重なって二重に届いた分は reducer が無視する
+  const handleNextCandidate = useCallback(
+    (index: number) => {
+      dispatch({ type: 'IMAGE_FINISHED', index, reaction: finish() })
+    },
+    [dispatch, finish],
+  )
 
   // 表情判定の途中でカメラが使えなくなったら、確認画面に戻す(確認画面で原因の案内と再試行を出す)
   if (phase === 'candidate' && camera.error) {

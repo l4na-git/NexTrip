@@ -31,7 +31,8 @@ export type TripSessionEvent =
   | { type: 'DECLINE' }
   | { type: 'BACK_TO_START' }
   | { type: 'CONFIRM_CHECK' }
-  | { type: 'IMAGE_FINISHED'; reaction: ImageReaction }
+  // index は計測した画像の位置。いまの画像と違うもの(二重に届いた古いイベント)は無視する
+  | { type: 'IMAGE_FINISHED'; index: number; reaction: ImageReaction }
   | { type: 'CAMERA_LOST' }
   | { type: 'SELECT'; spotId: string }
   | { type: 'DECIDE' }
@@ -75,6 +76,7 @@ export function reduceTripSession(
       return from('check', () => ({ ...initialTripSession, phase: 'candidate' }))
     case 'IMAGE_FINISHED':
       return from('candidate', () => {
+        if (event.index !== state.candidateIndex) return state
         const image = catalog.images[state.candidateIndex]
         const reactions = { ...state.reactions, [image.id]: event.reaction }
         if (state.candidateIndex < catalog.images.length - 1) {
