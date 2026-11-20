@@ -1,10 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
-import type { PlaceType } from '../domain/model'
 import type { Repositories } from '../domain/ports'
 import { useCamera } from './hooks/useCamera'
 import { useNeedsRotate } from './hooks/useNeedsRotate'
 import type { ImageReaction } from '../domain/reaction/imageReaction'
-import { keywordShares, percentById } from '../domain/recommendation/keywordShare'
+import { keywordShares, percentById, type ImageInterests } from '../domain/recommendation/keywordShare'
 import { useImageReaction } from './hooks/useImageReaction'
 import { rankSpots } from '../domain/recommendation/spotRanking'
 import { CandidateScreen } from './screens/CandidateScreen'
@@ -16,6 +15,11 @@ import { ResultScreen } from './screens/ResultScreen'
 import { RotateScreen } from './screens/RotateScreen'
 import { requiresLandscape, type ScreenName } from './screens/screenName'
 import { StartScreen } from './screens/StartScreen'
+
+// 画像ごとの計測結果から、推薦に使う関心度だけを取り出す
+function interestsOf(reactions: Partial<Record<string, ImageReaction>>): ImageInterests {
+  return Object.fromEntries(Object.entries(reactions).map(([id, reaction]) => [id, reaction?.interest ?? 0]))
+}
 
 type Props = {
   repositories: Repositories
@@ -42,9 +46,9 @@ export default function App({ repositories }: Props) {
   )
   const { finish, reset, retry } = reaction
   // 画像ごとの反応と、そこから集計したキーワードごとの割合
-  const [reactions, setReactions] = useState<Partial<Record<PlaceType, ImageReaction>>>({})
+  const [reactions, setReactions] = useState<Partial<Record<string, ImageReaction>>>({})
   const percents = useMemo(
-    () => percentById(keywordShares(reactions, atmosphereImages, keywords)),
+    () => percentById(keywordShares(interestsOf(reactions), atmosphereImages, keywords)),
     [atmosphereImages, keywords, reactions],
   )
   const ranked = useMemo(() => rankSpots(spots, percents), [percents, spots])
@@ -56,7 +60,7 @@ export default function App({ repositories }: Props) {
       setCandidateIndex(candidateIndex + 1)
     } else {
       // 関心度がもっとも高い候補を最初から選択しておく
-      const nextPercents = percentById(keywordShares(next, atmosphereImages, keywords))
+      const nextPercents = percentById(keywordShares(interestsOf(next), atmosphereImages, keywords))
       setSelectedId(rankSpots(spots, nextPercents)[0].spot.id)
       setScreen('compare')
     }

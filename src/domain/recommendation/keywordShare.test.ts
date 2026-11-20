@@ -8,9 +8,10 @@ const keywords: Keyword[] = [
   { id: 'c', label: 'C' },
 ]
 
-const image = (id: AtmosphereImage['id'], keywordIds: string[]): AtmosphereImage => ({
+const image = (id: AtmosphereImage['placeType'], keywordIds: string[]): AtmosphereImage => ({
   id,
   placeType: id,
+  label: id,
   image: { src: null },
   keywordIds,
 })
@@ -21,14 +22,14 @@ const sum = (shares: { percent: number }[]) => shares.reduce((a, s) => a + s.per
 
 describe('keywordShares', () => {
   it('1 画像だけ反応があれば、その画像のキーワードで合計 100% になる', () => {
-    const shares = keywordShares({ sea: { interest: 80, noFace: false } }, images, keywords)
+    const shares = keywordShares({ sea: 80 }, images, keywords)
     expect(shares.map((s) => s.keywordId).sort()).toEqual(['a', 'b'])
     expect(sum(shares)).toBe(100)
   })
 
   it('複数の画像で共通のキーワードは割合が大きくなる', () => {
     const shares = keywordShares(
-      { sea: { interest: 50, noFace: false }, cafe: { interest: 50, noFace: false } },
+      { sea: 50, cafe: 50 },
       images,
       keywords,
     )
@@ -39,9 +40,9 @@ describe('keywordShares', () => {
   it('端数があっても合計が 100 になる', () => {
     const shares = keywordShares(
       {
-        sea: { interest: 33, noFace: false },
-        cafe: { interest: 33, noFace: false },
-        onsen: { interest: 33, noFace: false },
+        sea: 33,
+        cafe: 33,
+        onsen: 33,
       },
       images,
       keywords,
@@ -51,7 +52,7 @@ describe('keywordShares', () => {
 
   it('割合の大きい順に並ぶ', () => {
     const shares = keywordShares(
-      { sea: { interest: 10, noFace: false }, onsen: { interest: 90, noFace: false } },
+      { sea: 10, onsen: 90 },
       images,
       keywords,
     )
@@ -59,15 +60,15 @@ describe('keywordShares', () => {
     expect(shares[0].keywordId).toBe('c')
   })
 
-  it('reactions に無い画像は無視される', () => {
-    const shares = keywordShares({ onsen: { interest: 60, noFace: false } }, images, keywords)
+  it('interests に無い画像は無視される', () => {
+    const shares = keywordShares({ onsen: 60 }, images, keywords)
     expect(shares).toEqual([{ keywordId: 'c', label: 'C', percent: 100 }])
   })
 
-  it('関心度がすべて 0(noFace を含む)のときは空', () => {
+  it('関心度がすべて 0 のときは空', () => {
     expect(keywordShares({}, images, keywords)).toEqual([])
     expect(
-      keywordShares({ sea: { interest: 0, noFace: true }, cafe: { interest: 0, noFace: false } }, images, keywords),
+      keywordShares({ sea: 0, cafe: 0 }, images, keywords),
     ).toEqual([])
   })
 })
