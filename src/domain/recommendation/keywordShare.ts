@@ -1,5 +1,4 @@
 import type { AtmosphereImage, Keyword } from '../model'
-import type { ImageReaction } from '../reaction/imageReaction'
 
 export type KeywordShare = {
   keywordId: string
@@ -8,20 +7,20 @@ export type KeywordShare = {
   percent: number
 }
 
-// 画像の id ごとの反応
-type Reactions = Partial<Record<string, ImageReaction>>
+// 画像の id ごとの関心度(0〜100)。計測していない画像は含めなくてよい
+export type ImageInterests = Partial<Record<string, number>>
 
 // 各キーワードの重みを「そのキーワードを持つ画像の関心度の合計」とし、全体に占める割合を出す。
 // 誰も笑わなかったときは空配列。
 export function keywordShares(
-  reactions: Reactions,
+  interests: ImageInterests,
   images: AtmosphereImage[],
   keywords: Keyword[],
 ): KeywordShare[] {
   const weights = keywords.map((keyword) =>
     images.reduce(
       (sum, image) =>
-        image.keywordIds.includes(keyword.id) ? sum + (reactions[image.id]?.interest ?? 0) : sum,
+        image.keywordIds.includes(keyword.id) ? sum + (interests[image.id] ?? 0) : sum,
       0,
     ),
   )
