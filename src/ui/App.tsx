@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'react'
-import type { PlaceType } from '../domain/model'
 import type { Repositories } from '../domain/ports'
 import { useCamera } from './hooks/useCamera'
 import { useNeedsRotate } from './hooks/useNeedsRotate'
@@ -42,7 +41,7 @@ export default function App({ repositories }: Props) {
   )
   const { finish, reset, retry } = reaction
   // 画像ごとの反応と、そこから集計したキーワードごとの割合
-  const [reactions, setReactions] = useState<Partial<Record<PlaceType, ImageReaction>>>({})
+  const [reactions, setReactions] = useState<Partial<Record<string, ImageReaction>>>({})
   const percents = useMemo(
     () => percentById(keywordShares(reactions, atmosphereImages, keywords)),
     [atmosphereImages, keywords, reactions],

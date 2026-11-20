@@ -1,4 +1,4 @@
-import type { AtmosphereImage, Keyword, PlaceType } from '../model'
+import type { AtmosphereImage, Keyword } from '../model'
 import type { ImageReaction } from '../reaction/imageReaction'
 
 export type KeywordShare = {
@@ -8,7 +8,8 @@ export type KeywordShare = {
   percent: number
 }
 
-type Reactions = Partial<Record<PlaceType, ImageReaction>>
+// 画像の id ごとの反応
+type Reactions = Partial<Record<string, ImageReaction>>
 
 // 各キーワードの重みを「そのキーワードを持つ画像の関心度の合計」とし、全体に占める割合を出す。
 // 誰も笑わなかったときは空配列。

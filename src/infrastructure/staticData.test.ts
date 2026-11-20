@@ -30,7 +30,7 @@ describe('static data', () => {
 
   it('各 placeType にスポットが1件以上ある', () => {
     for (const image of images) {
-      expect(spots.some((s) => s.placeType === image.id)).toBe(true)
+      expect(spots.some((s) => s.placeType === image.placeType)).toBe(true)
     }
   })
 

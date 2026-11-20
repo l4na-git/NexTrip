@@ -15,12 +15,12 @@ const keywords: Keyword[] = [
 
 // 仮の値。今後変更する
 const atmosphereImages: AtmosphereImage[] = [
-  { id: 'sea', placeType: '海', image: { src: null }, keywordIds: ['open', 'relax', 'nature'] },
-  { id: 'cafe', placeType: 'カフェ', image: { src: null }, keywordIds: ['stylish', 'relax'] },
-  { id: 'nature', placeType: '山・自然', image: { src: null }, keywordIds: ['nature', 'healing', 'open'] },
-  { id: 'nightview', placeType: '夜景', image: { src: null }, keywordIds: ['romantic', 'special'] },
-  { id: 'themepark', placeType: 'テーマパーク', image: { src: null }, keywordIds: ['lively', 'special'] },
-  { id: 'onsen', placeType: '温泉', image: { src: null }, keywordIds: ['healing', 'relax'] },
+  { id: 'sea', placeType: 'sea', label: '海', image: { src: null }, keywordIds: ['open', 'relax', 'nature'] },
+  { id: 'cafe', placeType: 'cafe', label: 'カフェ', image: { src: null }, keywordIds: ['stylish', 'relax'] },
+  { id: 'nature', placeType: 'nature', label: '山・自然', image: { src: null }, keywordIds: ['nature', 'healing', 'open'] },
+  { id: 'nightview', placeType: 'nightview', label: '夜景', image: { src: null }, keywordIds: ['romantic', 'special'] },
+  { id: 'themepark', placeType: 'themepark', label: 'テーマパーク', image: { src: null }, keywordIds: ['lively', 'special'] },
+  { id: 'onsen', placeType: 'onsen', label: '温泉', image: { src: null }, keywordIds: ['healing', 'relax'] },
 ]
 
 // ダミー。スポット推薦(D)で使う

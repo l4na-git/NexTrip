@@ -8,9 +8,10 @@ const keywords: Keyword[] = [
   { id: 'c', label: 'C' },
 ]
 
-const image = (id: AtmosphereImage['id'], keywordIds: string[]): AtmosphereImage => ({
+const image = (id: AtmosphereImage['placeType'], keywordIds: string[]): AtmosphereImage => ({
   id,
   placeType: id,
+  label: id,
   image: { src: null },
   keywordIds,
 })

@@ -30,13 +30,13 @@ export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVid
     <Screen orientation="landscape">
       <ScreenHeader />
       <div className={styles.body}>
-        <Placeholder label={`［ 画像：${image.placeType} ］`} size="lg" className={styles.photo} />
+        <Placeholder label={`［ 画像：${image.label} ］`} size="lg" className={styles.photo} />
         <section className={styles.detail}>
           <div className={styles.info}>
             <p className={styles.count}>
               候補 {index + 1} / {total}
             </p>
-            <h1 className={styles.name}>{image.placeType}</h1>
+            <h1 className={styles.name}>{image.label}</h1>
           </div>
           <CameraPreview
             {...camera}
