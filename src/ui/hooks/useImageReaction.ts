@@ -1,43 +1,31 @@
 import { useCallback, useState } from 'react'
+import { ReactionMeasurement } from '../../application/reactionMeasurement'
+import type { ImageReaction } from '../../domain/reaction/imageReaction'
 import { DEFAULT_SMILE_CONFIG } from '../../domain/reaction/config'
-import {
-  ImageReactionRecorder,
-  NO_FACE_HOLD_MS,
-  NoFaceWatcher,
-  type ImageReaction,
-} from '../../domain/reaction/imageReaction'
 import { useSmileMeter, type SmileFrame } from './useSmileMeter'
 
 const MAX_FACES = 5
 
-// カメラ映像から画像ごとの反応を計測する。誰も見つからない状態の検知もここで行う。
+// カメラ映像から画像ごとの反応を計測する。計測のルールは ReactionMeasurement に任せ、ここでは検出とつなぐだけにする
 export function useImageReaction(video: HTMLVideoElement | null, enabled: boolean) {
-  const [recorder] = useState(() => new ImageReactionRecorder(DEFAULT_SMILE_CONFIG))
-  const [watcher] = useState(() => new NoFaceWatcher(NO_FACE_HOLD_MS))
+  const [measurement] = useState(() => new ReactionMeasurement(DEFAULT_SMILE_CONFIG))
   const [absent, setAbsent] = useState(false)
   const [attempt, setAttempt] = useState(0)
 
   const onFrame = useCallback(
-    (frame: SmileFrame) => {
-      recorder.update(frame.timestamp, frame.group)
-      const { absent, returned } = watcher.update(frame.timestamp, frame.group)
-      // 人が戻ったら、その画像は最初から計測し直す
-      if (returned) recorder.reset()
-      setAbsent(absent)
-    },
-    [recorder, watcher],
+    (frame: SmileFrame) => setAbsent(measurement.update(frame.timestamp, frame.group).absent),
+    [measurement],
   )
 
   const { status } = useSmileMeter(video, { enabled, maxFaces: MAX_FACES, attempt, onFrame })
 
   // いまの画像の計測を確定し、次の画像のために計測をやり直す
-  const finish = useCallback((): ImageReaction => recorder.finish(), [recorder])
+  const finish = useCallback((): ImageReaction => measurement.finish(), [measurement])
 
   const reset = useCallback(() => {
-    recorder.reset()
-    watcher.reset()
+    measurement.reset()
     setAbsent(false)
-  }, [recorder, watcher])
+  }, [measurement])
 
   // 読み込みに失敗したあとに、もう一度読み込む
   const retry = useCallback(() => setAttempt((n) => n + 1), [])
