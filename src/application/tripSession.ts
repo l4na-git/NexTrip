@@ -85,8 +85,9 @@ export function reduceTripSession(
         return { ...state, reactions, phase: 'compare', selectedSpotId: top?.spot.id ?? null }
       })
     case 'CAMERA_LOST':
-      // 表情判定の途中でカメラが使えなくなったら、トップに戻す
-      return from('candidate', () => ({ ...state, phase: 'start' }))
+      // 表情判定の途中でカメラが使えなくなったら、確認画面に戻して原因の案内と再試行を出す。
+      // 計測は確認画面で確定したときに最初からやり直す
+      return from('candidate', () => ({ ...state, phase: 'check' }))
     case 'SELECT':
       return from('compare', () => ({ ...state, selectedSpotId: event.spotId }))
     case 'DECIDE':

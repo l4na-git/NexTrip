@@ -65,6 +65,7 @@ stateDiagram-v2
   Candidate --> Compare: 6枚を見終わる
   Candidate --> NoFace: 誰も写らない状態が約1秒続く
   NoFace --> Candidate: 人が見つかる (同じ画像から再開)
+  Candidate --> Check: カメラが使えなくなる (原因を案内)
   Compare --> Result: この候補に決める
   Result --> [*]
 

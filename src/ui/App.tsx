@@ -39,7 +39,7 @@ export default function App({ repositories }: Props) {
     dispatch({ type: 'IMAGE_FINISHED', reaction: finish() })
   }, [dispatch, finish])
 
-  // 表情判定の途中でカメラが使えなくなったら、トップに戻す(カメラは phase が変わると止まる)
+  // 表情判定の途中でカメラが使えなくなったら、確認画面に戻す(確認画面で原因の案内と再試行を出す)
   if (phase === 'candidate' && camera.error) {
     dispatch({ type: 'CAMERA_LOST' })
   }

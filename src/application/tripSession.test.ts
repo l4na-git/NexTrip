@@ -74,8 +74,8 @@ describe('reduceTripSession: 画面遷移', () => {
     expect(run([{ type: 'DECIDE' }], at('compare')).phase).toBe('result')
   })
 
-  it('候補表示中にカメラが使えなくなるとトップに戻る', () => {
-    expect(run([{ type: 'CAMERA_LOST' }], at('candidate')).phase).toBe('start')
+  it('候補表示中にカメラが使えなくなると、確認画面に戻る', () => {
+    expect(run([{ type: 'CAMERA_LOST' }], at('candidate')).phase).toBe('check')
   })
 
   it('いまの画面で起こりえないイベントは無視する', () => {
