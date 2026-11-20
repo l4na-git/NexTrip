@@ -2,7 +2,7 @@ import { Button } from '../components/Button'
 import { Placeholder } from '../components/Placeholder'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
-import type { Spot } from '../domain/model'
+import type { Spot } from '../../domain/model'
 import styles from './ResultScreen.module.css'
 
 type Props = {

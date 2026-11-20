@@ -3,8 +3,8 @@ import { CameraPreview } from '../components/CameraPreview'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
 import type { CameraErrorReason, CameraState } from '../hooks/useCamera'
-import { canStartCandidate } from '../lib/cameraGate'
-import type { SmileMeterStatus } from '../lib/smile/useSmileMeter'
+import { canStartCandidate } from '../../application/cameraGate'
+import type { SmileMeterStatus } from '../hooks/useSmileMeter'
 import styles from './CheckScreen.module.css'
 
 // カメラが使えない原因ごとの案内。確認を閉じただけなら再試行で許可を求め直せるので、設定への案内はその次に置く

@@ -140,17 +140,25 @@ npm run dev      # http://localhost:5173
 
 ## ディレクトリ構成
 
+依存の向きは `ui` / `infrastructure` → `application` → `domain` です。`domain` は React や外部ライブラリに依存しません。
+
 ```
 src/
-  screens/      画面と、画面ごとの向きの要否
-  components/   画面で使う部品
-  hooks/        カメラの起動、向きの判定
-  lib/
-    smile/      笑顔の計測(検出、積算、関心度、画像ごとの計測)
-    keywordShare.ts   キーワードの割合の集計と、スポットの関心度の計算
-  domain/       型(model.ts)と、データ取得の interface(ports.ts)
-  infrastructure/   画像・キーワード・スポットのダミーデータ(ports の実装)
-  data/         候補の表示時間などの定数
+  main.tsx      composition root(使う実装をここで選ぶ)
+  domain/       ドメイン。React・ブラウザ・外部ライブラリに依存しない
+    model.ts          型(画像・キーワード・スポット)
+    ports.ts          データ取得の interface
+    reaction/         表情の計測(笑顔の積算、関心度、画像ごとの計測)
+    recommendation/   キーワードの割合の集計と、スポットの順位づけ
+  application/  アプリケーションのルール(表情判定に進めるか、候補の表示時間)
+  infrastructure/   ports などの実装
+    staticData.ts     画像・キーワード・スポットのダミーデータ
+    mediapipe/        MediaPipe による顔検出
+  ui/           React の画面
+    App.tsx           画面の切り替え
+    screens/          画面と、画面ごとの向きの要否
+    components/       画面で使う部品
+    hooks/            カメラの起動、向きの判定、表情の検出
   tools/        開発用ページ(閾値の確認)
 public/mediapipe/   顔検出のモデルと WASM
 ```

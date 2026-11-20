@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Spot } from '../domain/model'
+import type { Spot } from '../model'
 import { rankSpots, reactionLevel } from './spotRanking'
 
 const spot = (id: string, keywordIds: string[]): Spot => ({

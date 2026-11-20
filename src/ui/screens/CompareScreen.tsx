@@ -2,8 +2,8 @@ import { Button } from '../components/Button'
 import { CandidateCard } from '../components/CandidateCard'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
-import type { Keyword } from '../domain/model'
-import type { RankedSpot } from '../lib/spotRanking'
+import type { Keyword } from '../../domain/model'
+import type { RankedSpot } from '../../domain/recommendation/spotRanking'
 import styles from './CompareScreen.module.css'
 
 type Props = {
