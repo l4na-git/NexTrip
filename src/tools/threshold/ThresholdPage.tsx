@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { CANDIDATE_DURATION_MS } from '../../data/candidates'
+import { CANDIDATE_DURATION_MS } from '../../application/timing'
 import { useCamera } from '../../hooks/useCamera'
 import { DEFAULT_SMILE_CONFIG, type SmileConfig } from '../../domain/reaction/config'
 import { interestPercent } from '../../domain/reaction/interest'

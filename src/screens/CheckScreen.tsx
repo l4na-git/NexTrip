@@ -3,7 +3,7 @@ import { CameraPreview } from '../components/CameraPreview'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
 import type { CameraErrorReason, CameraState } from '../hooks/useCamera'
-import { canStartCandidate } from '../lib/cameraGate'
+import { canStartCandidate } from '../application/cameraGate'
 import type { SmileMeterStatus } from '../lib/smile/useSmileMeter'
 import styles from './CheckScreen.module.css'
 
