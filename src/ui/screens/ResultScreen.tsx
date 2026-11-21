@@ -7,9 +7,10 @@ import styles from './ResultScreen.module.css'
 
 type Props = {
   spot: Spot
+  onRestart: () => void
 }
 
-export function ResultScreen({ spot }: Props) {
+export function ResultScreen({ spot, onRestart }: Props) {
   const openMap = () => {
     const query = encodeURIComponent(`${spot.lat},${spot.lng}`)
     window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank', 'noopener')
@@ -36,6 +37,12 @@ export function ResultScreen({ spot }: Props) {
           </div>
         </section>
         <Placeholder label="［ 地図・目的地ピン ］" className={styles.map} />
+      </div>
+      {/* 計測結果を捨てる操作なので、「地図を開く」から離れた右下に、目立ちすぎないサブの見た目で置く */}
+      <div className={styles.footer}>
+        <Button variant="soft" onClick={onRestart}>
+          最初の画面に戻る
+        </Button>
       </div>
     </Screen>
   )

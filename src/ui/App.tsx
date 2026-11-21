@@ -71,6 +71,6 @@ export default function App({ repositories }: Props) {
       )
     case 'result':
       // 選んだスポットは比較画面で必ず決まる。データが空で決まらなかったときは何も出さない
-      return selectedSpot ? <ResultScreen spot={selectedSpot} /> : null
+      return selectedSpot ? <ResultScreen spot={selectedSpot} onRestart={actions.restart} /> : null
   }
 }

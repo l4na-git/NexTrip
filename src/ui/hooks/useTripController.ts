@@ -40,6 +40,7 @@ export function useTripController(repositories: Repositories) {
       finishImage: (index: number) => dispatch({ type: 'IMAGE_FINISHED', index, reaction: finish() }),
       select: (spotId: string) => dispatch({ type: 'SELECT', spotId }),
       decide: () => dispatch({ type: 'DECIDE' }),
+      restart: () => dispatch({ type: 'RESTART' }),
       retryCamera,
       retryDetector,
     }),
