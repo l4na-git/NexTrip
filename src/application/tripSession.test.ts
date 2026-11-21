@@ -78,6 +78,16 @@ describe('reduceTripSession: 画面遷移', () => {
     expect(run([{ type: 'DECIDE' }], at('compare')).phase).toBe('result')
   })
 
+  it('結果画面から最初の画面に戻ると、計測結果と選んだ候補を捨てる', () => {
+    const result: TripSessionState = {
+      phase: 'result',
+      candidateIndex: 1,
+      reactions: { 'img-a': reaction(80), 'img-b': reaction(20) },
+      selectedSpotId: 'spot-a',
+    }
+    expect(run([{ type: 'RESTART' }], result)).toEqual(initialTripSession)
+  })
+
   it('候補表示中にカメラが使えなくなると、確認画面に戻る', () => {
     expect(run([{ type: 'CAMERA_LOST' }], at('candidate')).phase).toBe('check')
   })
@@ -89,6 +99,8 @@ describe('reduceTripSession: 画面遷移', () => {
   it('いまの画面で起こりえないイベントは無視する', () => {
     const start = at('start')
     expect(run([{ type: 'DECIDE' }, { type: 'CONFIRM_CHECK' }, { type: 'CAMERA_LOST' }], start)).toBe(start)
+    const candidate = at('candidate')
+    expect(run([{ type: 'RESTART' }], candidate)).toBe(candidate)
     const compare = at('compare')
     expect(run([{ type: 'IMAGE_FINISHED', index: 0, reaction: reaction(50) }], compare)).toBe(compare)
   })

@@ -37,6 +37,8 @@ export type TripSessionEvent =
   | { type: 'DETECTOR_FAILED' }
   | { type: 'SELECT'; spotId: string }
   | { type: 'DECIDE' }
+  // 結果を見終わったあと、別のグループや別の条件でもう一度使えるように最初に戻る
+  | { type: 'RESTART' }
 
 export const initialTripSession: TripSessionState = {
   phase: 'start',
@@ -134,5 +136,8 @@ export function reduceTripSession(
       return from('compare', () => ({ ...state, selectedSpotId: event.spotId }))
     case 'DECIDE':
       return from('compare', () => ({ ...state, phase: 'result' }))
+    case 'RESTART':
+      // 前回の計測結果と選んだ候補を残さない
+      return from('result', () => initialTripSession)
   }
 }
