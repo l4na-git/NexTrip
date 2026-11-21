@@ -68,7 +68,7 @@ stateDiagram-v2
   Candidate --> Check: カメラが使えなくなる (原因を案内)
   Candidate --> Check: 表情の検出が止まる (読み込み直しを案内)
   Compare --> Result: この候補に決める
-  Result --> [*]
+  Result --> Start: 最初の画面に戻る
 
   note right of Check
     モデルの読み込みが終わるまで
