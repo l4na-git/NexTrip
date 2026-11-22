@@ -108,7 +108,7 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
                   やめる
                 </Button>
                 <Button disabled={!canStart} onClick={onConfirm}>
-                  {canStart ? '全員写っています' : '準備中…'}
+                  {canStart ? 'はじめる' : '準備中…'}
                 </Button>
               </div>
             )}

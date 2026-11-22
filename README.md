@@ -61,7 +61,7 @@ stateDiagram-v2
   [*] --> Start
   Start --> Consent: はじめる
   Consent --> Check: わかった
-  Check --> Candidate: 全員写っています
+  Check --> Candidate: はじめる
   Candidate --> Compare: 6枚を見終わる
   Candidate --> NoFace: 誰も写らない状態が約1秒続く
   NoFace --> Candidate: 人が見つかる (同じ画像から再開)
