@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react'
 import { CameraPreview } from '../components/CameraPreview'
+import { FaceEmoji } from '../components/FaceEmoji'
 import { Placeholder } from '../components/Placeholder'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
@@ -24,7 +25,16 @@ type Props = {
   onResume: () => void
 }
 
-export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVideo, onStop, onResume }: Props) {
+export function CandidateScreen({
+  camera,
+  atmosphereImages,
+  index,
+  onNext,
+  onVideo,
+  smileStart,
+  onStop,
+  onResume,
+}: Props) {
   const image = atmosphereImages[index]
   const total = atmosphereImages.length
   const [confirming, setConfirming] = useState(false)
@@ -72,6 +82,7 @@ export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVid
             radius={12}
             className={styles.camera}
           />
+          <FaceEmoji smileStart={smileStart} />
         </section>
       </div>
 
