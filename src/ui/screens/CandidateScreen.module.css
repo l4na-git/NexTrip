@@ -50,10 +50,7 @@
   align-items: center;
   gap: 14px;
   flex-shrink: 0;
-  height: 58px;
-  padding: 0 16px;
-  border-radius: var(--radius-md);
-  background: var(--color-accent-soft);
+  height: 32px;
 }
 
 .dots {
@@ -87,7 +84,7 @@
   height: 8px;
   overflow: hidden;
   border-radius: var(--radius-bar);
-  background: var(--color-surface);
+  background: var(--color-accent-soft);
 }
 
 .fill {
