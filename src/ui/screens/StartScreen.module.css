@@ -4,24 +4,23 @@
   gap: 8px;
 }
 
-.brand {
-  font-size: 14px;
-  line-height: 19px;
-  font-weight: 600;
-  color: var(--color-accent);
+/* 縦向きの画面は左右の余白が本文と同じなので、ロゴの字下げをなくす */
+.header {
+  padding-left: 0;
+  margin-bottom: 16px;
 }
 
 .title {
   font-size: 30px;
   line-height: 41px;
-  font-weight: 600;
-  color: var(--color-ink);
+  font-weight: 700;
+  color: var(--color-on-bg);
 }
 
 .lead {
   font-size: 14px;
   line-height: 19px;
-  color: var(--color-muted);
+  color: var(--color-on-bg);
 }
 
 .illustration {
@@ -37,11 +36,12 @@
   margin-top: 20px;
 }
 
+/* 画面の中ほどにあるので、白い文字でも読めるように大きめにする */
 .howTitle {
-  font-size: 16px;
-  line-height: 22px;
-  font-weight: 600;
-  color: var(--color-ink);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 700;
+  color: var(--color-on-bg);
 }
 
 .steps {
@@ -57,8 +57,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 26px;
-  font-size: 14px;
+  min-height: 48px;
+  padding: 10px 14px;
+  border-radius: var(--radius-xs);
+  background: var(--color-surface);
+  font-size: 15px;
   line-height: 19px;
   color: var(--color-ink);
 }

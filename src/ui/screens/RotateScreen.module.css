@@ -8,33 +8,31 @@
   min-height: 100dvh;
   padding: calc(var(--safe-top) + 24px) calc(var(--safe-right) + 24px)
     calc(var(--safe-bottom) + 24px) calc(var(--safe-left) + 24px);
-  background: var(--color-surface);
+  /* 文字が画面の中ほどより上に来るようにして、背景の濃い部分に載せる */
+  padding-bottom: calc(var(--safe-bottom) + 24px + 12dvh);
   text-align: center;
+  color: var(--color-on-bg);
 }
 
 .icon {
   margin-bottom: 12px;
-  color: var(--color-accent);
   animation: turn 2.4s ease-in-out infinite;
 }
 
 .title {
-  font-size: 22px;
-  line-height: 30px;
-  font-weight: 600;
-  color: var(--color-ink);
+  font-size: 24px;
+  line-height: 33px;
+  font-weight: 700;
 }
 
 .lead {
-  font-size: 14px;
-  line-height: 19px;
-  color: var(--color-muted);
+  font-size: 15px;
+  line-height: 22px;
 }
 
 .note {
-  font-size: 12px;
-  line-height: 17px;
-  color: var(--color-muted);
+  font-size: 13px;
+  line-height: 19px;
 }
 
 @keyframes turn {

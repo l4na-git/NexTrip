@@ -11,8 +11,14 @@ body,
   min-height: 100%;
 }
 
+/* 内容が画面より長いときに、グラデーションの下に白い地が見えないようにする */
+html {
+  background: #d5ebff;
+}
+
 body {
-  background: var(--color-surface);
+  min-height: 100dvh;
+  background: var(--gradient-page);
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-size: 14px;
@@ -45,7 +51,8 @@ button {
   cursor: pointer;
 }
 
+/* 青い背景の上でも見えるように、濃い色で太めにする */
 button:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 3px solid var(--color-ink);
   outline-offset: 2px;
 }

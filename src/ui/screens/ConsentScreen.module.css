@@ -14,13 +14,13 @@
   font-size: 28px;
   line-height: 38px;
   font-weight: 700;
-  color: var(--color-ink);
+  color: var(--color-on-bg);
 }
 
 .lead {
   font-size: 15px;
   line-height: 22px;
-  color: var(--color-muted);
+  color: var(--color-on-bg);
 }
 
 /* 約束ごとを 1 つずつカードにして、読み飛ばされにくくする */
@@ -61,10 +61,15 @@
   padding-top: 32px;
 }
 
+/*
+ * 画面の下の薄い背景に載るので、濃い文字にする。
+ * 真っ黒に近い --color-ink だと青い背景の上で沈んで見えるので、少しグレーに寄せる。
+ * 背景が一番濃くなる位置(#8aa9e2 あたり)でも、明るさの差は約 4.9:1 ある
+ */
 .note {
   font-size: 13px;
   line-height: 19px;
-  color: var(--color-muted);
+  color: #2f3a47;
 }
 
 /* 同意するボタンを上に置き、同意しないボタンも同じ大きさで並べて、どちらも選びやすくする */
