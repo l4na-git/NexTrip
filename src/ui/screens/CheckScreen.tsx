@@ -67,7 +67,7 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
               </>
             ) : (
               <>
-                <h1 className={styles.title}>みんなが写っているか確認</h1>
+                <h1 className={styles.title}>全員写っているか確認</h1>
                 <p className={styles.lead}>
                   スマホの位置を調整して、参加する人全員がプレビューに写るようにしてください。
                 </p>
