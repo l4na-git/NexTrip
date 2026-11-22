@@ -1,5 +1,6 @@
 /* ヘッダーの行に収まる高さにして、候補やカメラの表示を削らない */
 .trigger {
+  position: relative;
   flex-shrink: 0;
   height: 32px;
   padding: 0 16px;
@@ -12,6 +13,13 @@
   font-weight: 700;
   color: var(--color-on-bg);
   white-space: nowrap;
+}
+
+/* 見た目は 32px のまま、押せる範囲だけ上下に広げて 44px 以上にする(枠線の内側が基準なので 8px ずつ) */
+.trigger::before {
+  content: '';
+  position: absolute;
+  inset: -8px 0;
 }
 
 .dialog {
