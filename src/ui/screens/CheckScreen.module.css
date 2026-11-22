@@ -69,6 +69,27 @@
   line-height: 21px;
 }
 
+/* 笑顔になった瞬間に、映像の縁を一度だけ光らせる */
+.glowA video {
+  animation: glow-a 0.6s ease-out;
+}
+
+.glowB video {
+  animation: glow-b 0.6s ease-out;
+}
+
+@keyframes glow-a {
+  30% {
+    box-shadow: 0 0 16px 4px var(--color-cta);
+  }
+}
+
+@keyframes glow-b {
+  30% {
+    box-shadow: 0 0 16px 4px var(--color-cta);
+  }
+}
+
 .action {
   display: flex;
   flex-direction: column;
