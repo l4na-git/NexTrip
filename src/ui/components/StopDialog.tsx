@@ -12,6 +12,7 @@ type Props = {
 export function StopDialog({ onStop, onOpenChange }: Props) {
   const dialog = useRef<HTMLDialogElement>(null)
   const titleId = useId()
+  const leadId = useId()
 
   const open = () => {
     dialog.current?.showModal()
@@ -28,12 +29,13 @@ export function StopDialog({ onStop, onOpenChange }: Props) {
         ref={dialog}
         className={styles.dialog}
         aria-labelledby={titleId}
+        aria-describedby={leadId}
         onClose={() => onOpenChange?.(false)}
       >
         <h2 id={titleId} className={styles.title}>
           計測をやめて最初の画面に戻りますか？
         </h2>
-        <p className={styles.lead}>
+        <p id={leadId} className={styles.lead}>
           ここまでの計測は残りません。次に始めるときは、最初の候補からやり直しになります。
         </p>
         <div className={styles.buttons}>
