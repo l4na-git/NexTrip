@@ -23,7 +23,8 @@
   align-items: start;
   align-self: stretch;
   flex: 1 1 0;
-  min-height: 0;
+  /* 狭い画面でも写真は 160×120 以上を保つ。足りない分は画面ごとスクロールする */
+  min-height: 120px;
 }
 
 .photo {
