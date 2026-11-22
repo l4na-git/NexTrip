@@ -60,6 +60,7 @@ export default function App({ repositories }: Props) {
           index={state.candidateIndex}
           onNext={actions.finishImage}
           onVideo={setVideo}
+          smileStart={detector.smileStart}
           onStop={actions.backToStart}
           onResume={actions.resumeImage}
         />

@@ -11,26 +11,26 @@ const MAX_FACES = 5
 export type SmileStart = { id: number; faceIndexes: number[] }
 
 // カメラ映像から画像ごとの反応を計測する。計測のルールは ReactionMeasurement に任せ、ここでは検出とつなぐだけにする。
-// watchSmiles の間は、誰かが笑顔になった瞬間も返す(確認画面の演出用)
-export function useImageReaction(video: HTMLVideoElement | null, enabled: boolean, watchSmiles = false) {
+// smileScope があるあいだは、誰かが笑顔になった瞬間も返す(演出用)。画面の名前などを渡し、変わったら前の笑顔は捨てる
+export function useImageReaction(video: HTMLVideoElement | null, enabled: boolean, smileScope: string | null = null) {
   const [measurement] = useState(() => new ReactionMeasurement(DEFAULT_SMILE_CONFIG))
   const [absent, setAbsent] = useState(false)
   const [attempt, setAttempt] = useState(0)
   const [smileStart, setSmileStart] = useState<SmileStart | null>(null)
   const smilingRef = useRef<boolean[]>([])
-  const watchSmilesRef = useRef(watchSmiles)
+  const watchSmilesRef = useRef(smileScope !== null)
 
-  // 確認画面に戻ってきたとき、前回の笑顔で演出が出ないように捨てる(描画中に state を合わせる)
-  const [prevWatchSmiles, setPrevWatchSmiles] = useState(watchSmiles)
-  if (prevWatchSmiles !== watchSmiles) {
-    setPrevWatchSmiles(watchSmiles)
+  // 画面が変わったとき、前の画面の笑顔で演出が出ないように捨てる(描画中に state を合わせる)
+  const [prevSmileScope, setPrevSmileScope] = useState(smileScope)
+  if (prevSmileScope !== smileScope) {
+    setPrevSmileScope(smileScope)
     setSmileStart(null)
   }
 
   useEffect(() => {
-    watchSmilesRef.current = watchSmiles
+    watchSmilesRef.current = smileScope !== null
     smilingRef.current = []
-  }, [watchSmiles])
+  }, [smileScope])
 
   const onFrame = useCallback(
     (frame: SmileFrame) => {
