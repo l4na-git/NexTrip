@@ -56,8 +56,6 @@ type Props = {
 export function CheckScreen({ camera, detector, smileStart, onVideo, onRetry, onConfirm, onRetryCamera, onBack }: Props) {
   const guide = camera.error ? cameraErrorGuides[camera.reason ?? 'unknown'] : null
   const canStart = canStartCandidate(camera, detector === 'ready')
-  // 同じクラスのままだとアニメーションがやり直されないので、笑顔になるたびに 2 つのクラスを交互に付け替える
-  const glow = smileStart ? (smileStart.id % 2 ? styles.glowA : styles.glowB) : ''
   return (
     <Screen orientation="landscape">
       <ScreenHeader />
@@ -125,7 +123,7 @@ export function CheckScreen({ camera, detector, smileStart, onVideo, onRetry, on
             )}
           </div>
         </section>
-        <CameraPreview {...camera} placeholder="カメラを起動中…" onVideo={onVideo} className={`${styles.preview} ${glow}`} />
+        <CameraPreview {...camera} placeholder="カメラを起動中…" onVideo={onVideo} glow={smileStart?.id} className={styles.preview} />
       </div>
     </Screen>
   )

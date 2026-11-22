@@ -24,7 +24,16 @@ type Props = {
   onResume: () => void
 }
 
-export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVideo, onStop, onResume }: Props) {
+export function CandidateScreen({
+  camera,
+  atmosphereImages,
+  index,
+  onNext,
+  onVideo,
+  smileStart,
+  onStop,
+  onResume,
+}: Props) {
   const image = atmosphereImages[index]
   const total = atmosphereImages.length
   const [confirming, setConfirming] = useState(false)
@@ -69,6 +78,7 @@ export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVid
             placeholder="ライブカメラ映像"
             variant="outline"
             onVideo={onVideo}
+            glow={smileStart?.id}
             radius={12}
             className={styles.camera}
           />
