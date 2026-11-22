@@ -33,7 +33,7 @@ export function ConsentScreen({ onAgree, onDecline }: Props) {
       </section>
       <div className={styles.footer}>
         <p className={styles.note}>
-          カメラを使わない場合、このアプリは利用できません。「同意しない」を選ぶとトップに戻ります。
+          カメラを使わない場合、このアプリは利用できません。「同意しない」を選ぶと最初の画面に戻ります。
         </p>
         <div className={styles.action}>
           <Button size="lg" fullWidth onClick={onAgree}>

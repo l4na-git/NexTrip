@@ -86,7 +86,7 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
             {guide ? (
               <div className={styles.buttons}>
                 <Button variant="soft" onClick={onBack}>
-                  トップに戻る
+                  最初の画面に戻る
                 </Button>
                 {guide.retryable && <Button onClick={onRetryCamera}>もう一度試す</Button>}
               </div>
