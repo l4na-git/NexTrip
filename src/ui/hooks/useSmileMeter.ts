@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { SmileDetector } from '../../application/ports'
+import type { FacePoint, SmileDetector } from '../../application/ports'
 import { useSmileDetectorFactory } from '../smileDetectorContext'
 import { createFailureCounter } from './failureCounter'
 import { groupSmileScore, toFaceSmile, type FaceSmile } from '../../domain/reaction/score'
@@ -9,6 +9,8 @@ export type SmileFrame = {
   faces: FaceSmile[]
   // 写っている全員の平均。誰も写っていなければ null
   group: number | null
+  // faces と同じ並びの、顔の上端の位置
+  tops: FacePoint[]
 }
 
 export type SmileMeterStatus = 'idle' | 'loading' | 'ready' | 'error'
@@ -87,8 +89,11 @@ export function useSmileMeter(video: HTMLVideoElement | null, options: Options) 
       lastVideoTime = video.currentTime
 
       let faces: FaceSmile[]
+      let tops: FacePoint[]
       try {
-        faces = detector.detect(video, now).map(toFaceSmile)
+        const detected = detector.detect(video, now)
+        faces = detected.map(toFaceSmile)
+        tops = detected.map((face) => face.top)
       } catch (e) {
         // 失敗したフレームは飛ばす。続くときは error にして、読み込みのやり直しを促す
         if (detectFailures.fail()) {
@@ -100,7 +105,7 @@ export function useSmileMeter(video: HTMLVideoElement | null, options: Options) 
       }
       detectFailures.succeed()
 
-      const next: SmileFrame = { timestamp: now, faces, group: groupSmileScore(faces) }
+      const next: SmileFrame = { timestamp: now, faces, group: groupSmileScore(faces), tops }
       try {
         onFrameRef.current?.(next)
       } catch (e) {
