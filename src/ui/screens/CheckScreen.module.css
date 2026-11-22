@@ -83,9 +83,20 @@
   gap: 12px;
 }
 
-/* 「やめる」は文字の幅だけにして、主ボタンと 1 行に並べる。iPhone SE ほど狭いときだけ折り返す */
-.split > button:first-child {
+/* 縦に積むと上の説明がスクロールしないと見えなくなるので、iPhone SE の幅でも 1 行に並べる。
+   左右の余白を詰め、主ボタンが残りの幅を使う */
+.split {
+  flex-wrap: nowrap;
+  align-self: stretch;
+}
+
+.split > button {
   min-width: 0;
+  padding: 0 16px;
+}
+
+.split > button:last-child {
+  flex: 1;
 }
 
 .error {
