@@ -7,8 +7,9 @@ import { useSmileMeter, type SmileFrame } from './useSmileMeter'
 
 const MAX_FACES = 5
 
-// 誰かが笑顔になった瞬間。id は毎回増えるので、演出のきっかけ(key など)に使う
-export type SmileStart = { id: number; faceIndexes: number[] }
+// 誰かが笑顔になった瞬間。id は毎回増えるので、演出のきっかけ(key など)に使う。
+// points は笑顔になった人の顔の上端の、画面上の位置(px)
+export type SmileStart = { id: number; faceIndexes: number[]; points: { x: number; y: number }[] }
 
 // カメラ映像から画像ごとの反応を計測する。計測のルールは ReactionMeasurement に任せ、ここでは検出とつなぐだけにする。
 // smileScope があるあいだは、誰かが笑顔になった瞬間も返す(演出用)。画面の名前などを渡し、変わったら前の笑顔は捨てる
@@ -39,9 +40,18 @@ export function useImageReaction(video: HTMLVideoElement | null, enabled: boolea
       const { smiling, started } = nextSmiles(smilingRef.current, frame.faces, DEFAULT_SMILE_CONFIG)
       smilingRef.current = smiling
       // 笑顔になった瞬間だけ state を変え、毎フレームの再描画を避ける
-      if (started.length > 0) setSmileStart((prev) => ({ id: (prev?.id ?? 0) + 1, faceIndexes: started }))
+      if (started.length === 0) return
+      // 映像はインカメラの鏡像で表示しているので、左右を反転して画面上の位置にする
+      const rect = video?.getBoundingClientRect()
+      const points = rect
+        ? started.map((i) => ({
+            x: rect.left + (1 - frame.tops[i].x) * rect.width,
+            y: rect.top + frame.tops[i].y * rect.height,
+          }))
+        : []
+      setSmileStart((prev) => ({ id: (prev?.id ?? 0) + 1, faceIndexes: started, points }))
     },
-    [measurement],
+    [measurement, video],
   )
 
   const { status } = useSmileMeter(video, { enabled, maxFaces: MAX_FACES, attempt, onFrame })

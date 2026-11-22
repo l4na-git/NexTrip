@@ -1,5 +1,6 @@
 import { Button } from '../components/Button'
 import { CameraPreview } from '../components/CameraPreview'
+import { FaceEmoji } from '../components/FaceEmoji'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
 import type { CameraErrorReason, CameraState } from '../hooks/useCamera'
@@ -53,7 +54,7 @@ type Props = {
   onBack: () => void
 }
 
-export function CheckScreen({ camera, detector, onVideo, onRetry, onConfirm, onRetryCamera, onBack }: Props) {
+export function CheckScreen({ camera, detector, smileStart, onVideo, onRetry, onConfirm, onRetryCamera, onBack }: Props) {
   const guide = camera.error ? cameraErrorGuides[camera.reason ?? 'unknown'] : null
   const canStart = canStartCandidate(camera, detector === 'ready')
   return (
@@ -124,6 +125,7 @@ export function CheckScreen({ camera, detector, onVideo, onRetry, onConfirm, onR
           </div>
         </section>
         <CameraPreview {...camera} placeholder="カメラを起動中…" onVideo={onVideo} className={styles.preview} />
+        <FaceEmoji smileStart={smileStart} />
       </div>
     </Screen>
   )
