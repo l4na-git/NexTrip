@@ -16,10 +16,22 @@
   box-shadow: 0 0 0 1px var(--color-accent);
 }
 
+.photoArea {
+  container-type: size;
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  align-self: stretch;
+  flex: 1 1 0;
+  /* 狭い画面でも写真は 160×120 以上を保つ。足りない分は画面ごとスクロールする */
+  min-height: 120px;
+}
+
 .photo {
-  width: 100%;
-  height: 74px;
-  flex-shrink: 1;
+  /* カードの高さが足りないときも 4:3 のまま縮める。
+     ウィキペディアの写真は比率がまちまちなので、本物の <img> には object-fit: cover を付ける */
+  width: min(100cqw, 100cqh * 4 / 3);
+  aspect-ratio: 4 / 3;
 }
 
 .name {
@@ -38,5 +50,15 @@
 @media (orientation: portrait) {
   .card {
     flex: none;
+  }
+
+  /* 縦向きはカードの高さが決まっていないので、幅に合わせる */
+  .photoArea {
+    container-type: inline-size;
+    flex: none;
+  }
+
+  .photo {
+    width: 100%;
   }
 }

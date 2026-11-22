@@ -17,7 +17,9 @@ export function CandidateCard({ card, selected, onSelect }: Props) {
       aria-pressed={selected}
       onClick={onSelect}
     >
-      <Placeholder label="［ 写真 ］" size="sm" radius={8} className={styles.photo} />
+      <span className={styles.photoArea}>
+        <Placeholder label="［ 写真 ］" size="sm" radius={8} className={styles.photo} />
+      </span>
       <span className={styles.name}>{card.name}</span>
       <span className={styles.reaction}>{card.reaction}</span>
       <StackedInterestBar segments={card.segments} />

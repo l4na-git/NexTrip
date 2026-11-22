@@ -31,7 +31,9 @@ export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVid
     <Screen orientation="landscape">
       <ScreenHeader />
       <div className={styles.body}>
-        <Placeholder label={`［ 画像：${image.label} ］`} size="lg" className={styles.photo} />
+        <div className={styles.photoArea}>
+          <Placeholder label={`［ 画像：${image.label} ］`} size="lg" className={styles.photo} />
+        </div>
         <section className={styles.detail}>
           <div className={styles.info}>
             <p className={styles.count}>

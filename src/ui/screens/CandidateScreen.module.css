@@ -6,8 +6,17 @@
   min-height: 0;
 }
 
-.photo {
+.photoArea {
+  container-type: size;
+  display: grid;
+  place-items: center;
   min-height: 0;
+}
+
+.photo {
+  /* 枠の幅と高さのどちらに当たっても 2:1 のまま収める */
+  width: min(100cqw, 100cqh * 2);
+  aspect-ratio: 2 / 1;
 }
 
 .detail {
@@ -51,10 +60,7 @@
   align-items: center;
   gap: 14px;
   flex-shrink: 0;
-  height: 58px;
-  padding: 0 16px;
-  border-radius: var(--radius-md);
-  background: var(--color-accent-soft);
+  height: 32px;
 }
 
 .dots {
@@ -88,7 +94,7 @@
   height: 8px;
   overflow: hidden;
   border-radius: var(--radius-bar);
-  background: var(--color-surface);
+  background: var(--color-accent-soft);
 }
 
 .fill {
@@ -132,7 +138,11 @@
     grid-template-columns: 1fr;
   }
 
+  .photoArea {
+    container-type: inline-size;
+  }
+
   .photo {
-    min-height: 160px;
+    width: 100%;
   }
 }
