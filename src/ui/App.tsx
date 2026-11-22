@@ -44,6 +44,8 @@ export default function App({ repositories }: Props) {
         <CheckScreen
           camera={camera}
           detector={detector.status}
+          smileStart={detector.smileStart}
+          onVideo={setVideo}
           onRetry={actions.retryDetector}
           onRetryCamera={actions.retryCamera}
           onBack={actions.backToStart}

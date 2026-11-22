@@ -12,7 +12,7 @@ export function useTripController(repositories: Repositories) {
   const { state, catalog, percents, ranked, selectedSpot, dispatch } = useTripSession(repositories)
   const camera = useCamera(needsCamera(state.phase))
   const [video, setVideo] = useState<HTMLVideoElement | null>(null)
-  const reaction = useImageReaction(video, needsDetector(state.phase))
+  const reaction = useImageReaction(video, needsDetector(state.phase), state.phase === 'check')
   const { finish, reset, retry: retryDetector } = reaction
   const { retry: retryCamera } = camera
 
@@ -56,7 +56,7 @@ export function useTripController(repositories: Repositories) {
     ranked,
     selectedSpot,
     camera,
-    detector: { status: reaction.status, noFace: reaction.noFace },
+    detector: { status: reaction.status, noFace: reaction.noFace, smileStart: reaction.smileStart },
     setVideo,
     actions,
   }
