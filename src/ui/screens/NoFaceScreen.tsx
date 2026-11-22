@@ -1,19 +1,24 @@
 import { CameraPreview } from '../components/CameraPreview'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
+import { StopDialog } from '../components/StopDialog'
 import type { CameraState } from '../hooks/useCamera'
 import styles from './NoFaceScreen.module.css'
 
 type Props = {
   camera: CameraState
   onVideo: (video: HTMLVideoElement | null) => void
+  onStop: () => void
 }
 
 // 候補表示中に誰も写らなくなったときの注意画面(仮)。人が見つかると自動で候補表示に戻る。
-export function NoFaceScreen({ camera, onVideo }: Props) {
+export function NoFaceScreen({ camera, onVideo, onStop }: Props) {
   return (
     <Screen orientation="landscape">
-      <ScreenHeader />
+      <div className={styles.top}>
+        <ScreenHeader />
+        <StopDialog onStop={onStop} />
+      </div>
       <div className={styles.body}>
         <section className={styles.text} role="alert">
           <span className={styles.mark} aria-hidden="true">

@@ -31,7 +31,7 @@ export default function App({ repositories }: Props) {
 
   // 候補表示中に誰も見つからなくなったら注意画面にする。見つかると同じ候補を最初からやり直す。
   if (phase === 'candidate' && detector.noFace) {
-    return <NoFaceScreen camera={camera} onVideo={setVideo} />
+    return <NoFaceScreen camera={camera} onVideo={setVideo} onStop={actions.backToStart} />
   }
 
   switch (phase) {
@@ -58,6 +58,8 @@ export default function App({ repositories }: Props) {
           index={state.candidateIndex}
           onNext={actions.finishImage}
           onVideo={setVideo}
+          onStop={actions.backToStart}
+          onResume={actions.resumeImage}
         />
       )
     case 'compare':
