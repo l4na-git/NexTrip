@@ -14,7 +14,7 @@
   line-height: 1;
   color: var(--color-on-bg);
   white-space: nowrap;
-  animation: rise 2.5s ease-out both;
+  animation: rise 4s ease-out both;
 }
 
 @keyframes rise {
@@ -22,7 +22,9 @@
     opacity: 0;
     transform: translateY(0) scale(0.8);
   }
-  15% {
+  /* 上がっている間はしばらく見えたままにし、最後の方で消す */
+  15%,
+  65% {
     opacity: 0.8;
   }
   100% {
