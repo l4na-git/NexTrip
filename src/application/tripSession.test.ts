@@ -67,6 +67,14 @@ describe('reduceTripSession: 画面遷移', () => {
     expect(run([{ type: 'BACK_TO_START' }], at('check')).phase).toBe('start')
   })
 
+  it('候補表示の途中でやめると、反応を残さずトップに戻る', () => {
+    const state = run(
+      [{ type: 'IMAGE_FINISHED', index: 0, reaction: reaction(10) }, { type: 'BACK_TO_START' }],
+      at('candidate'),
+    )
+    expect(state).toEqual(initialTripSession)
+  })
+
   it('全部の画像を見終わると比較画面に進む', () => {
     const state = run([{ type: 'IMAGE_FINISHED', index: 0, reaction: reaction(10) }], at('candidate'))
     expect(state.phase).toBe('candidate')

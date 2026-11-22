@@ -67,7 +67,7 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
               </>
             ) : (
               <>
-                <h1 className={styles.title}>みんなが写っているか確認</h1>
+                <h1 className={styles.title}>全員写っているか確認</h1>
                 <p className={styles.lead}>
                   スマホの位置を調整して、参加する人全員がプレビューに写るようにしてください。
                 </p>
@@ -83,24 +83,39 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
             )}
           </div>
           <div className={styles.action}>
-            {guide ? (
-              <div className={styles.buttons}>
+            {guide?.retryable ? (
+              <div className={`${styles.buttons} ${styles.split}`}>
                 <Button variant="soft" onClick={onBack}>
-                  トップに戻る
+                  やめる
                 </Button>
-                {guide.retryable && <Button onClick={onRetryCamera}>もう一度試す</Button>}
+                <Button onClick={onRetryCamera}>もう一度試す</Button>
               </div>
+            ) : guide ? (
+              // 試し直せないときは戻るしかないので、行き先をそのまま書く
+              <Button variant="soft" onClick={onBack}>
+                最初の画面に戻る
+              </Button>
             ) : detector === 'error' ? (
               <>
                 <p className={`${styles.panel} ${styles.error}`} role="alert">
                   表情を検出できませんでした。
                 </p>
-                <Button onClick={onRetry}>もう一度読み込む</Button>
+                <div className={`${styles.buttons} ${styles.split}`}>
+                  <Button variant="soft" onClick={onBack}>
+                    やめる
+                  </Button>
+                  <Button onClick={onRetry}>もう一度読み込む</Button>
+                </div>
               </>
             ) : (
-              <Button disabled={!canStart} onClick={onConfirm}>
-                {canStart ? '全員写っています' : '準備中…'}
-              </Button>
+              <div className={`${styles.buttons} ${styles.split}`}>
+                <Button variant="soft" onClick={onBack}>
+                  やめる
+                </Button>
+                <Button disabled={!canStart} onClick={onConfirm}>
+                  {canStart ? 'はじめる' : '準備中…'}
+                </Button>
+              </div>
             )}
           </div>
         </section>

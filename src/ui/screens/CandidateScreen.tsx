@@ -1,8 +1,9 @@
-import { useEffect, type CSSProperties } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import { CameraPreview } from '../components/CameraPreview'
 import { Placeholder } from '../components/Placeholder'
 import { Screen } from '../components/Screen'
 import { ScreenHeader } from '../components/ScreenHeader'
+import { StopDialog } from '../components/StopDialog'
 import { CANDIDATE_DURATION_MS } from '../../application/timing'
 import type { AtmosphereImage } from '../../domain/model'
 import type { CameraState } from '../hooks/useCamera'
@@ -15,21 +16,40 @@ type Props = {
   // 見ていた画像の位置を渡して、次へ進む
   onNext: (index: number) => void
   onVideo: (video: HTMLVideoElement | null) => void
+  onStop: () => void
+  // いまの候補の計測を捨てて、最初から測り直す
+  onResume: () => void
 }
 
-export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVideo }: Props) {
+export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVideo, onStop, onResume }: Props) {
   const image = atmosphereImages[index]
   const total = atmosphereImages.length
+  const [confirming, setConfirming] = useState(false)
+  // 確認から戻るたびに増やし、タイマーと進捗バーを 3 秒から張り直す
+  const [round, setRound] = useState(0)
 
   // 候補ごとに 3 秒で自動的に次へ進む。index が変わるたびにタイマーを張り直す。
+  // やめるかの確認中は進めない
   useEffect(() => {
+    if (confirming) return
     const timer = window.setTimeout(() => onNext(index), CANDIDATE_DURATION_MS)
     return () => window.clearTimeout(timer)
-  }, [index, onNext])
+  }, [index, onNext, confirming, round])
+
+  const onOpenChange = (open: boolean) => {
+    setConfirming(open)
+    if (!open) {
+      onResume()
+      setRound((n) => n + 1)
+    }
+  }
 
   return (
     <Screen orientation="landscape">
-      <ScreenHeader />
+      <div className={styles.top}>
+        <ScreenHeader />
+        <StopDialog onStop={onStop} onOpenChange={onOpenChange} />
+      </div>
       <div className={styles.body}>
         <div className={styles.photoArea}>
           <Placeholder label={`［ 画像：${image.label} ］`} size="lg" className={styles.photo} />
@@ -64,7 +84,7 @@ export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVid
         </ol>
         <div className={styles.track} aria-hidden="true">
           <div
-            key={index}
+            key={`${index}-${round}`}
             className={styles.fill}
             style={{ '--duration': `${CANDIDATE_DURATION_MS}ms` } as CSSProperties}
           />

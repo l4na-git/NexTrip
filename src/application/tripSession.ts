@@ -109,6 +109,8 @@ export function reduceTripSession(
     case 'DECLINE':
       return from('consent', () => ({ ...state, phase: 'start' }))
     case 'BACK_TO_START':
+      // 候補表示の途中でやめたときは、そこまでの反応を残さない
+      if (state.phase === 'candidate') return { ...initialTripSession, phase: 'start' }
       return from('check', () => ({ ...state, phase: 'start' }))
     case 'CONFIRM_CHECK':
       // 計測は毎回最初からやり直す

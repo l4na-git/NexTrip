@@ -60,8 +60,8 @@ stateDiagram-v2
 
   [*] --> Start
   Start --> Consent: はじめる
-  Consent --> Check: 同意して始める
-  Check --> Candidate: 全員写っています
+  Consent --> Check: わかった
+  Check --> Candidate: はじめる
   Candidate --> Compare: 6枚を見終わる
   Candidate --> NoFace: 誰も写らない状態が約1秒続く
   NoFace --> Candidate: 人が見つかる (同じ画像から再開)
@@ -69,6 +69,9 @@ stateDiagram-v2
   Candidate --> Check: 表情の検出が止まる (読み込み直しを案内)
   Compare --> Result: この候補に決める
   Result --> Start: 最初の画面に戻る
+  Check --> Start: やめる
+  Candidate --> Start: やめる (確認して計測を捨てる)
+  NoFace --> Start: やめる (確認して計測を捨てる)
 
   note right of Check
     モデルの読み込みが終わるまで

@@ -38,6 +38,8 @@ export function useTripController(repositories: Repositories) {
       // index の画像の計測を確定してから、次へ進む。
       // 「次の候補へ」とタイマーが重なって二重に届いた分は reducer が無視する
       finishImage: (index: number) => dispatch({ type: 'IMAGE_FINISHED', index, reaction: finish() }),
+      // やめるかの確認から戻ったら、いまの画像を測り直す
+      resumeImage: reset,
       select: (spotId: string) => dispatch({ type: 'SELECT', spotId }),
       decide: () => dispatch({ type: 'DECIDE' }),
       restart: () => dispatch({ type: 'RESTART' }),
