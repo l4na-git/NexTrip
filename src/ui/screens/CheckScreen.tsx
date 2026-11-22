@@ -83,13 +83,18 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
             )}
           </div>
           <div className={styles.action}>
-            {guide ? (
-              <div className={styles.buttons}>
+            {guide?.retryable ? (
+              <div className={`${styles.buttons} ${styles.split}`}>
                 <Button variant="soft" onClick={onBack}>
-                  最初の画面に戻る
+                  やめる
                 </Button>
-                {guide.retryable && <Button onClick={onRetryCamera}>もう一度試す</Button>}
+                <Button onClick={onRetryCamera}>もう一度試す</Button>
               </div>
+            ) : guide ? (
+              // 試し直せないときは戻るしかないので、行き先をそのまま書く
+              <Button variant="soft" onClick={onBack}>
+                最初の画面に戻る
+              </Button>
             ) : detector === 'error' ? (
               <>
                 <p className={`${styles.panel} ${styles.error}`} role="alert">
