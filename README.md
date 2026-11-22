@@ -108,7 +108,9 @@ flowchart LR
 
 ### 写真の取得
 
-写真の取得には、ウィキペディア(日本語版)の [MediaWiki Action API](https://www.mediawiki.org/wiki/API:Query) を使う予定です。
+写真の取得には、ウィキペディア(日本語版)の [MediaWiki Action API](https://www.mediawiki.org/wiki/API:Query) を使う予定です。返る画像の比率はまちまちなので、比較カードでは 4:3 の枠に `object-fit: cover` で表示します。取得サイズは `piprop=thumbnail&pithumbsize=960` を想定しています。
+
+候補画面の雰囲気画像は自前で用意し、16:9(1920×1080 の WebP、1 枚 300KB 以下)にそろえます。
 
 ## 始め方
 

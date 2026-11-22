@@ -6,8 +6,17 @@
   min-height: 0;
 }
 
-.photo {
+.photoArea {
+  container-type: size;
+  display: grid;
+  place-items: center;
   min-height: 0;
+}
+
+.photo {
+  /* 枠の幅と高さのどちらに当たっても 16:9 のまま収める */
+  width: min(100cqw, 100cqh * 16 / 9);
+  aspect-ratio: 16 / 9;
 }
 
 .detail {
@@ -128,7 +137,11 @@
     grid-template-columns: 1fr;
   }
 
+  .photoArea {
+    container-type: inline-size;
+  }
+
   .photo {
-    min-height: 160px;
+    width: 100%;
   }
 }
