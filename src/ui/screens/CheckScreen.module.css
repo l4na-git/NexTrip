@@ -83,6 +83,11 @@
   gap: 12px;
 }
 
+/* 「やめる」は文字の幅だけにして、主ボタンと 1 行に並べる。iPhone SE ほど狭いときだけ折り返す */
+.split > button:first-child {
+  min-width: 0;
+}
+
 .error {
   font-size: 13px;
   line-height: 18px;

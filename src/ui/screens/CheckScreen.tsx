@@ -95,7 +95,7 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
                 <p className={`${styles.panel} ${styles.error}`} role="alert">
                   表情を検出できませんでした。
                 </p>
-                <div className={styles.buttons}>
+                <div className={`${styles.buttons} ${styles.split}`}>
                   <Button variant="soft" onClick={onBack}>
                     やめる
                   </Button>
@@ -103,7 +103,7 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
                 </div>
               </>
             ) : (
-              <div className={styles.buttons}>
+              <div className={`${styles.buttons} ${styles.split}`}>
                 <Button variant="soft" onClick={onBack}>
                   やめる
                 </Button>
