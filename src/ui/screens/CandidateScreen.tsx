@@ -2,6 +2,7 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import { CameraPreview } from '../components/CameraPreview'
 import { Placeholder } from '../components/Placeholder'
 import { Screen } from '../components/Screen'
+import { SmileBubbles } from '../components/SmileBubbles'
 import { ScreenHeader } from '../components/ScreenHeader'
 import { StopDialog } from '../components/StopDialog'
 import { CANDIDATE_DURATION_MS } from '../../application/timing'
@@ -9,6 +10,7 @@ import type { AtmosphereImage } from '../../domain/model'
 import type { CameraState } from '../hooks/useCamera'
 import type { SmileStart } from '../hooks/useImageReaction'
 import styles from './CandidateScreen.module.css'
+import { SMILE_SYMBOLS } from './smileSymbols'
 
 type Props = {
   camera: CameraState
@@ -24,7 +26,16 @@ type Props = {
   onResume: () => void
 }
 
-export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVideo, onStop, onResume }: Props) {
+export function CandidateScreen({
+  camera,
+  atmosphereImages,
+  index,
+  onNext,
+  onVideo,
+  smileStart,
+  onStop,
+  onResume,
+}: Props) {
   const image = atmosphereImages[index]
   const total = atmosphereImages.length
   const [confirming, setConfirming] = useState(false)
@@ -49,6 +60,7 @@ export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVid
 
   return (
     <Screen orientation="landscape">
+      <SmileBubbles smileStart={smileStart} symbols={SMILE_SYMBOLS} />
       <div className={styles.top}>
         <ScreenHeader />
         <StopDialog onStop={onStop} onOpenChange={onOpenChange} />

@@ -2,6 +2,7 @@ import { Button } from '../components/Button'
 import { CameraPreview } from '../components/CameraPreview'
 import { Screen } from '../components/Screen'
 import { SmileBubbles } from '../components/SmileBubbles'
+import { SMILE_SYMBOLS } from './smileSymbols'
 import { ScreenHeader } from '../components/ScreenHeader'
 import type { CameraErrorReason, CameraState } from '../hooks/useCamera'
 import { canStartCandidate } from '../../application/cameraGate'
@@ -38,8 +39,6 @@ const cameraErrorGuides: Record<CameraErrorReason, { title: string; lead: string
   },
 }
 
-const emojis = ['😊', '😄', '😆', '🥰']
-
 const tips = ['全員の顔が枠の中に入っているか', '明るさは十分か', '顔が隠れていないか']
 
 type Props = {
@@ -61,7 +60,7 @@ export function CheckScreen({ camera, detector, smileStart, onVideo, onRetry, on
   const canStart = canStartCandidate(camera, detector === 'ready')
   return (
     <Screen orientation="landscape">
-      <SmileBubbles smileStart={smileStart} symbols={emojis} />
+      <SmileBubbles smileStart={smileStart} symbols={SMILE_SYMBOLS} />
       <ScreenHeader />
       <div className={styles.body}>
         <section className={styles.explanation}>
