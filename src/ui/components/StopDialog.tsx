@@ -33,7 +33,9 @@ export function StopDialog({ onStop, onOpenChange }: Props) {
         <h2 id={titleId} className={styles.title}>
           計測をやめて最初の画面に戻りますか？
         </h2>
-        <p className={styles.lead}>ここまでの結果は消えます。</p>
+        <p className={styles.lead}>
+          ここまでの計測は残りません。次に始めるときは、最初の候補からやり直しになります。
+        </p>
         <div className={styles.buttons}>
           <Button variant="soft" onClick={onStop}>
             やめる
