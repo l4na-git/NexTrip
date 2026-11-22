@@ -14,9 +14,9 @@
 }
 
 .photo {
-  /* 枠の幅と高さのどちらに当たっても 16:9 のまま収める */
-  width: min(100cqw, 100cqh * 16 / 9);
-  aspect-ratio: 16 / 9;
+  /* 枠の幅と高さのどちらに当たっても 2:1 のまま収める */
+  width: min(100cqw, 100cqh * 2);
+  aspect-ratio: 2 / 1;
 }
 
 .detail {
