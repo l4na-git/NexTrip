@@ -69,6 +69,9 @@ stateDiagram-v2
   Candidate --> Check: 表情の検出が止まる (読み込み直しを案内)
   Compare --> Result: この候補に決める
   Result --> Start: 最初の画面に戻る
+  Check --> Start: やめる
+  Candidate --> Start: やめる (確認して計測を捨てる)
+  NoFace --> Start: やめる (確認して計測を捨てる)
 
   note right of Check
     モデルの読み込みが終わるまで
