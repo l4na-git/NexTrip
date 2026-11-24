@@ -30,9 +30,48 @@
   line-height: 22px;
 }
 
-.note {
+/* 画面の中ほどより下に来て背景が薄くなるので、白いカードに載せる */
+.help {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+  margin-top: 12px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  text-align: left;
+}
+
+.helpTitle {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.causes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cause {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.remedy {
+  margin-top: 2px;
   font-size: 13px;
   line-height: 19px;
+  color: var(--color-muted);
 }
 
 @keyframes turn {
