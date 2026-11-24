@@ -9,7 +9,24 @@ export function RotateScreen() {
       </svg>
       <h1 className={styles.title}>画面を横にしてください</h1>
       <p className={styles.lead}>みんなで見やすいように、スマホを横向きにします。</p>
-      <p className={styles.note}>向きがかわらないときは、向きのロックをオフにしてください。</p>
+      <section className={styles.help}>
+        <h2 className={styles.helpTitle}>横にしても変わらないときは</h2>
+        <ul className={styles.causes}>
+          <li>
+            <p className={styles.cause}>画面の向きがロックされていませんか？</p>
+            <p className={styles.remedy}>
+              スマホの設定で、向きのロックをオフ(自動回転をオン)にしてください。
+            </p>
+          </li>
+          <li>
+            <p className={styles.cause}>LINE や Instagram などのアプリの中で開いていませんか？</p>
+            <p className={styles.remedy}>
+              アプリによっては横向きになりません。メニューの「ブラウザで開く」などから、Safari や Chrome
+              で開き直してください。
+            </p>
+          </li>
+        </ul>
+      </section>
     </main>
   )
 }
