@@ -1,0 +1,40 @@
+/* 文字やボタンより後ろ、ページの背景より前に置く */
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bubble {
+  position: absolute;
+  bottom: -40px;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--color-on-bg);
+  white-space: nowrap;
+  animation: rise 4s ease-out both;
+}
+
+@keyframes rise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+  /* 上がっている間はしばらく見えたままにし、最後の方で消す */
+  15%,
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-70vh) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer {
+    display: none;
+  }
+}
