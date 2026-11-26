@@ -19,6 +19,8 @@ html {
 body {
   min-height: 100dvh;
   background: var(--gradient-page);
+  /* 背景の演出(z-index: -1)を、body のグラデーションの上・中身の下に描くため */
+  isolation: isolate;
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-size: 14px;

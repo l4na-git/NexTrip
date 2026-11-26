@@ -1,10 +1,13 @@
 import { Button } from '../components/Button'
 import { CameraPreview } from '../components/CameraPreview'
 import { Screen } from '../components/Screen'
+import { SmileBubbles } from '../components/SmileBubbles'
+import { SMILE_SYMBOLS } from './smileSymbols'
 import { ScreenHeader } from '../components/ScreenHeader'
 import type { CameraErrorReason, CameraState } from '../hooks/useCamera'
 import { canStartCandidate } from '../../application/cameraGate'
 import type { SmileMeterStatus } from '../hooks/useSmileMeter'
+import type { SmileStart } from '../hooks/useImageReaction'
 import styles from './CheckScreen.module.css'
 
 // カメラが使えない原因ごとの案内。確認を閉じただけなら再試行で許可を求め直せるので、設定への案内はその次に置く
@@ -42,6 +45,9 @@ type Props = {
   camera: CameraState
   // 表情を検出するモデルの読み込み状況。準備ができるまで次へ進ませない
   detector: SmileMeterStatus
+  // 誰かが笑顔になった瞬間。笑顔に反応する演出のきっかけにする
+  smileStart: SmileStart | null
+  onVideo: (video: HTMLVideoElement | null) => void
   onRetry: () => void
   onConfirm: () => void
   // カメラが使えないときの操作。許可を変えたあとの取得のやり直しと、トップへの戻り
@@ -49,11 +55,12 @@ type Props = {
   onBack: () => void
 }
 
-export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamera, onBack }: Props) {
+export function CheckScreen({ camera, detector, smileStart, onVideo, onRetry, onConfirm, onRetryCamera, onBack }: Props) {
   const guide = camera.error ? cameraErrorGuides[camera.reason ?? 'unknown'] : null
   const canStart = canStartCandidate(camera, detector === 'ready')
   return (
     <Screen orientation="landscape">
+      <SmileBubbles smileStart={smileStart} symbols={SMILE_SYMBOLS} />
       <ScreenHeader />
       <div className={styles.body}>
         <section className={styles.explanation}>
@@ -119,7 +126,7 @@ export function CheckScreen({ camera, detector, onRetry, onConfirm, onRetryCamer
             )}
           </div>
         </section>
-        <CameraPreview {...camera} placeholder="カメラを起動中…" className={styles.preview} />
+        <CameraPreview {...camera} placeholder="カメラを起動中…" onVideo={onVideo} className={styles.preview} />
       </div>
     </Screen>
   )
