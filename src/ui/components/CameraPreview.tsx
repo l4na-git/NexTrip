@@ -9,6 +9,8 @@ type Props = CameraState & {
   className?: string
   // 映像の <video> 要素を受け取る(表情の検出用)。毎回変わる関数を渡すと再取得が繰り返されるので、安定した関数を渡す
   onVideo?: (video: HTMLVideoElement | null) => void
+  // 値が変わるたびに映像のまわりを一度光らせる(笑顔になった瞬間の id など)
+  glow?: number
 }
 
 // 画面が切り替わるたびに <video> を作り直すと、最初のフレームが出るまでプレビューが白く抜ける。
@@ -37,6 +39,7 @@ export function CameraPreview({
   radius = 16,
   className,
   onVideo,
+  glow,
 }: Props) {
   const holderRef = useRef<HTMLDivElement>(null)
 
@@ -58,13 +61,15 @@ export function CameraPreview({
   }, [stream, radius, onVideo])
 
   const message = error ? 'カメラを利用できません' : placeholder
+  // 同じクラスのままだとアニメーションがやり直されないので、2 つのクラスを交互に付け替える
+  const glowClass = glow === undefined ? undefined : glow % 2 ? styles.glowA : styles.glowB
 
   // 映像の表示中は外側の枠をなくし、映像そのものに枠線を付けて縁に沿わせる。
   // 映像(<video>)は上の効果で、この枠の中に付ける。
   return (
     <div
       ref={holderRef}
-      className={[styles.preview, !stream && styles[variant], className].filter(Boolean).join(' ')}
+      className={[styles.preview, !stream && styles[variant], glowClass, className].filter(Boolean).join(' ')}
       style={{ borderRadius: radius }}
     >
       {!stream && <p className={styles.message}>{message}</p>}

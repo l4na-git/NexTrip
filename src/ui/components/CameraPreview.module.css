@@ -29,6 +29,41 @@
   transform: scaleX(-1);
 }
 
+/* 笑顔になった瞬間に、映像のまわりを一度だけ光らせる。
+   枠で光が切れないよう、はみ出しを許す(映像自体は枠に収まっているので光だけがはみ出る) */
+.glowA,
+.glowB {
+  overflow: visible;
+}
+
+.glowA .video {
+  animation: glow-a 1s ease-out;
+}
+
+.glowB .video {
+  animation: glow-b 1s ease-out;
+}
+
+/* 同じ名前のままだとやり直されないので、同じ内容を 2 つ用意して交互に使う */
+@keyframes glow-a {
+  20%,
+  50% {
+    /* 細い輪で縁をはっきりさせ、やわらかい光を重ねる。光は画面の余白(24px)に収まる大きさにする */
+    box-shadow:
+      0 0 0 4px var(--color-cta),
+      0 0 16px 6px var(--color-cta);
+  }
+}
+
+@keyframes glow-b {
+  20%,
+  50% {
+    box-shadow:
+      0 0 0 4px var(--color-cta),
+      0 0 16px 6px var(--color-cta);
+  }
+}
+
 .message {
   padding: 0 12px;
   font-size: 14px;
@@ -36,7 +71,42 @@
   font-weight: 600;
 }
 
-.outline .message {
+.outline /* 笑顔になった瞬間に、映像のまわりを一度だけ光らせる。
+   枠で光が切れないよう、はみ出しを許す(映像自体は枠に収まっているので光だけがはみ出る) */
+.glowA,
+.glowB {
+  overflow: visible;
+}
+
+.glowA .video {
+  animation: glow-a 1s ease-out;
+}
+
+.glowB .video {
+  animation: glow-b 1s ease-out;
+}
+
+/* 同じ名前のままだとやり直されないので、同じ内容を 2 つ用意して交互に使う */
+@keyframes glow-a {
+  20%,
+  50% {
+    /* 細い輪で縁をはっきりさせ、やわらかい光を重ねる。光は画面の余白(24px)に収まる大きさにする */
+    box-shadow:
+      0 0 0 4px var(--color-cta),
+      0 0 16px 6px var(--color-cta);
+  }
+}
+
+@keyframes glow-b {
+  20%,
+  50% {
+    box-shadow:
+      0 0 0 4px var(--color-cta),
+      0 0 16px 6px var(--color-cta);
+  }
+}
+
+.message {
   font-size: 12px;
   line-height: 17px;
   font-weight: 400;

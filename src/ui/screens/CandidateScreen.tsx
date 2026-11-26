@@ -7,6 +7,7 @@ import { StopDialog } from '../components/StopDialog'
 import { CANDIDATE_DURATION_MS } from '../../application/timing'
 import type { AtmosphereImage } from '../../domain/model'
 import type { CameraState } from '../hooks/useCamera'
+import type { SmileStart } from '../hooks/useImageReaction'
 import styles from './CandidateScreen.module.css'
 
 type Props = {
@@ -16,12 +17,23 @@ type Props = {
   // 見ていた画像の位置を渡して、次へ進む
   onNext: (index: number) => void
   onVideo: (video: HTMLVideoElement | null) => void
+  // 誰かが笑顔になった瞬間。笑顔に反応する演出のきっかけにする
+  smileStart: SmileStart | null
   onStop: () => void
   // いまの候補の計測を捨てて、最初から測り直す
   onResume: () => void
 }
 
-export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVideo, onStop, onResume }: Props) {
+export function CandidateScreen({
+  camera,
+  atmosphereImages,
+  index,
+  onNext,
+  onVideo,
+  smileStart,
+  onStop,
+  onResume,
+}: Props) {
   const image = atmosphereImages[index]
   const total = atmosphereImages.length
   const [confirming, setConfirming] = useState(false)
@@ -66,6 +78,7 @@ export function CandidateScreen({ camera, atmosphereImages, index, onNext, onVid
             placeholder="ライブカメラ映像"
             variant="outline"
             onVideo={onVideo}
+            glow={smileStart?.id}
             radius={12}
             className={styles.camera}
           />
