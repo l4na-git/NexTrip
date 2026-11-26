@@ -110,7 +110,7 @@ export function ThresholdPage() {
     if (!simulate) return
     const id = window.setInterval(() => {
       const { value, noFace } = simRef.current
-      pushFrame({ timestamp: performance.now(), faces: [], group: noFace ? null : value })
+      pushFrame({ timestamp: performance.now(), faces: [], tops: [], group: noFace ? null : value })
     }, 66)
     return () => window.clearInterval(id)
   }, [simulate, pushFrame])

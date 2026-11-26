@@ -22,13 +22,18 @@ export const createSmileDetector: SmileDetectorFactory = async (maxFaces): Promi
   landmarker.detectForVideo(canvas, performance.now())
 
   return {
-    // 口角の生の値だけを返す。笑顔のスコアの計算はドメインで行う
+    // 口角の生の値と顔の位置を返す。笑顔のスコアの計算はドメインで行う
     detect(video, timestampMs) {
       const result = landmarker.detectForVideo(video, timestampMs)
-      return (result.faceBlendshapes ?? []).map(({ categories }) => ({
-        left: categories.find((c) => c.categoryName === 'mouthSmileLeft')?.score ?? 0,
-        right: categories.find((c) => c.categoryName === 'mouthSmileRight')?.score ?? 0,
-      }))
+      return (result.faceBlendshapes ?? []).map(({ categories }, i) => {
+        // 10 番は額の上端の中心のランドマーク
+        const forehead = result.faceLandmarks[i]?.[10]
+        return {
+          left: categories.find((c) => c.categoryName === 'mouthSmileLeft')?.score ?? 0,
+          right: categories.find((c) => c.categoryName === 'mouthSmileRight')?.score ?? 0,
+          top: { x: forehead?.x ?? 0.5, y: forehead?.y ?? 0 },
+        }
+      })
     },
     setMaxFaces: (count) => landmarker.setOptions({ numFaces: count }),
     close: () => landmarker.close(),

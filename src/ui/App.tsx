@@ -44,6 +44,8 @@ export default function App({ repositories }: Props) {
         <CheckScreen
           camera={camera}
           detector={detector.status}
+          smileStart={detector.smileStart}
+          onVideo={setVideo}
           onRetry={actions.retryDetector}
           onRetryCamera={actions.retryCamera}
           onBack={actions.backToStart}
@@ -58,6 +60,7 @@ export default function App({ repositories }: Props) {
           index={state.candidateIndex}
           onNext={actions.finishImage}
           onVideo={setVideo}
+          smileStart={detector.smileStart}
           onStop={actions.backToStart}
           onResume={actions.resumeImage}
         />

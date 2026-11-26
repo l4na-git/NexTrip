@@ -1,0 +1,36 @@
+.layer {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* 頭の上端に下端をそろえ、少し浮き上がって消える */
+.emoji {
+  position: absolute;
+  font-size: 28px;
+  line-height: 1;
+  white-space: nowrap;
+  animation: pop 1.2s ease-out forwards;
+}
+
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -80%) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -110%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -150%) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer {
+    display: none;
+  }
+}
